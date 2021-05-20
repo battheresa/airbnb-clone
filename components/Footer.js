@@ -1,5 +1,11 @@
 import styles from '../styles/Footer.module.css';
 
+import LanguageRoundedIcon from '@material-ui/icons/LanguageRounded';
+import AttachMoneyRoundedIcon from '@material-ui/icons/AttachMoneyRounded';
+import FacebookIcon from '@material-ui/icons/Facebook';
+import TwitterIcon from '@material-ui/icons/Twitter';
+import InstagramIcon from '@material-ui/icons/Instagram';
+
 import { footerNavigation } from '../utilities/database.js';
 
 function Footer() {
@@ -25,21 +31,21 @@ function Footer() {
                 {/* language and currency */}
                 <div className={styles.group}>
                     <button className={styles.button}>
-                        {/* <LanguageRoundedIcon fontSize='small' /> */}
+                        <LanguageRoundedIcon fontSize='small' style={{ marginRight: '6px' }} />
                         <h5>English (US)</h5>
                     </button>
 
                     <button className={styles.button}>
-                        {/* <AttachMoneyRoundedIcon fontSize='small' /> */}
+                        <AttachMoneyRoundedIcon fontSize='small' style={{ marginRight: '2px' }} />
                         <h5>HKD</h5>
                     </button>
                 </div>
 
                 {/* social links */}
                 <div className={styles.group}>
-                    {/* <FacebookIcon className='footer__icon' />
-                    <TwitterIcon className='footer__icon' />
-                    <InstagramIcon className='footer__icon' /> */}
+                    <FacebookIcon className={styles.button} />
+                    <TwitterIcon className={styles.button} />
+                    <InstagramIcon className={styles.button} />
                 </div>
             </div>
         </div>
