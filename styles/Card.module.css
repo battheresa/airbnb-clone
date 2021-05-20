@@ -1,0 +1,9 @@
+.container {
+    min-width: 250px;
+    max-width: 1fr;
+}
+
+.image {
+    width: 100%;
+    border-radius: 10px;
+}
