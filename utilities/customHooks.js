@@ -35,3 +35,21 @@ export function useWindowOffset() {
     
     return offset;
 }
+
+export function useMousedownTarget() {
+    const [ target, setTarget ] = useState('');
+    const windowExist = typeof window !== 'undefined';
+
+    useEffect(() => {
+        if (windowExist) {
+            function handleMousedown(event) {
+                setTarget(event.target.id);
+            }
+        
+            window.addEventListener('mousedown', handleMousedown);
+            return () => window.removeEventListener('mousedown', handleMousedown);
+        }
+    }, [windowExist]);
+    
+    return target;
+}
