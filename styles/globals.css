@@ -120,6 +120,10 @@ input::placeholder {
     color: var(--grey007);
 }
 
+option {
+    font-size: 20px;
+}
+
 div::-webkit-scrollbar {
     display: none;
 }
