@@ -57,6 +57,7 @@
 
 .search {
     position: absolute;
+    top: 18px;
     left: 0;
 
     width: 100vw;
@@ -125,13 +126,19 @@
     
     border: 1px solid var(--grey004);
     border-radius: 100px;
-
-    transition: 0.2s;
 }
 
 .searchField > div {
     width: 100%;
     height: 100%;
+}
+
+.searchField > div > div {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: row;
 }
 
 /* ------------------------ Search Field Menu -- */
@@ -168,7 +175,7 @@
     border-radius: 100px;
 }
 
-.searchFieldMenu:hover::before {
+.searchFieldMenu:not([name=firstMenu]):hover::before {
     content: '';
     background-color: var(--white);
 
@@ -199,7 +206,7 @@
 }
 
 .searchFieldMenuActive {
-
+    
 }
 
 .searchFieldMenuInactive {

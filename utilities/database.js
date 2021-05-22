@@ -1,3 +1,5 @@
+export const deviceBreakpoint = { small: 400, medium: 940, large: 1200 };
+
 export const logoURL = { black: 'https://firebasestorage.googleapis.com/v0/b/airbnb-clone-9ccdf.appspot.com/o/airbnb-logo-black.png?alt=media&token=0886b441-ccda-451b-b158-ff29ce252559', white: 'https://firebasestorage.googleapis.com/v0/b/airbnb-clone-9ccdf.appspot.com/o/airbnb-logo-white.png?alt=media&token=8cfc2537-f96f-43b6-8fda-afd44b116429' };
 
 export const searchMenuList = [
