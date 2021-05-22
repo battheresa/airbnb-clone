@@ -117,7 +117,7 @@ input {
 }
 
 input::placeholder {
-    color: var(--grey007);
+    color: var(--grey006);
 }
 
 option {
