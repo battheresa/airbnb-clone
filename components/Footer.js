@@ -15,37 +15,44 @@ function Footer() {
                 {footerNavigation.map(section => (
                     <div key={section.header} className={styles.section}>
                         <h6>{section.header.toUpperCase()}</h6>
-                        {section.content.map(item => (
-                            <p key={item.text}>{item.text}</p>
-                        ))}
+                        <div>
+                            {section.content.map(item => (
+                                <p key={item.text}>{item.text}</p>
+                            ))}
+                        </div>
                     </div>
                 ))}
             </div>
 
-            <div className='flexRow'>
+            <div className={styles.information}>
                 {/* copy rights */}
-                <div className={styles.credit}>
+                <div className={styles.credit} name='before'>
                     <p>&copy; 2021 Airbnb Clone Project. No rights reserved.</p>
                 </div>
 
                 {/* language and currency */}
                 <div className={styles.group}>
-                    <button className={styles.button}>
+                    <div className={styles.button}>
                         <LanguageRoundedIcon fontSize='small' style={{ marginRight: '6px' }} />
                         <h5>English (US)</h5>
-                    </button>
+                    </div>
 
-                    <button className={styles.button}>
+                    <div className={styles.button}>
                         <AttachMoneyRoundedIcon fontSize='small' style={{ marginRight: '2px' }} />
                         <h5>HKD</h5>
-                    </button>
+                    </div>
                 </div>
 
                 {/* social links */}
-                <div className={styles.group}>
-                    <FacebookIcon className={styles.button} />
-                    <TwitterIcon className={styles.button} />
-                    <InstagramIcon className={styles.button} />
+                <div className={styles.group} name='icon'>
+                    <FacebookIcon className={styles.icon} />
+                    <TwitterIcon className={styles.icon} />
+                    <InstagramIcon className={styles.icon} />
+                </div>
+
+                {/* copy rights */}
+                <div className={styles.credit} name='after'>
+                    <p>&copy; 2021 Airbnb Clone Project. No rights reserved.</p>
                 </div>
             </div>
         </div>
