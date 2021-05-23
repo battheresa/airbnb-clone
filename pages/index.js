@@ -14,6 +14,12 @@ function Home() {
     const { width, height } = useWindowDimensions();
     const [ currentTab, setCurrentTab ] = useState(0);
     
+    // useEffect(() => {
+    //     if (height < 400) {
+            
+    //     }
+    // }, [height]);
+
     return (
         <div>
             <Head>
@@ -24,8 +30,8 @@ function Home() {
 
             <Header />
 
-            <div className='flexColumn'>
-                <div className='banner'style={{ height: height }}>
+            <div className={styles.container}>
+                <div className={styles.banner}>
                     <div className={styles.bannerImage}>
                         <img className={styles.bannerImage} src='https://images.unsplash.com/photo-1601918774946-25832a4be0d6?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1949&q=80' alt='Unsplash' />
                     </div>
@@ -36,7 +42,7 @@ function Home() {
                     </div>
                 </div>
 
-                <div className='section'>
+                <div className={styles.section}>
                     <h2>Live anywhere</h2>
                     <div className={styles.cardHolder}>
                         <Card image='https://a0.muscache.com/im/pictures/a0316ecb-e49b-4b3a-b6b6-c2876b820e8c.jpg?im_w=720' title='Entire homes' body='' />
@@ -46,7 +52,7 @@ function Home() {
                     </div>
                 </div>
 
-                <div className='sectionReverse'>
+                <div className={styles.sectionReverse}>
                     <h2>Experience the world</h2>
                     <p>Unique activities with local experts—in person or online.</p>
                     <div className={styles.cardHolder}>
@@ -56,7 +62,7 @@ function Home() {
                     </div>
                 </div>
 
-                <div className='section'>
+                <div className={styles.section}>
                     <h2>Join millions of hosts on Airbnb</h2>
                     <div className={styles.cardHolder}>
                         <Card image='https://a0.muscache.com/im/pictures/2a16f833-464c-446c-8d74-33eb8c643975.jpg?im_w=1200' title='Host Your Home' body='' />
@@ -65,7 +71,7 @@ function Home() {
                     </div>
                 </div>
 
-                <div className='section'>
+                <div className={styles.section}>
                     <h2>Inspiration for future getaways</h2>
                     <div className={styles.tabHeader}>
                         {tabs.map((item, i) => (

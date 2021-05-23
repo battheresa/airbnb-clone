@@ -275,7 +275,7 @@
     }
 }
 
-@media (max-width: 730px) {
+@media (max-width: 740px) {
     .container {
         padding: 18px 25px;
     }
@@ -292,10 +292,8 @@
         align-items: center;
         z-index: 2;
 
-        /* border: 1px solid var(--grey004); */
         border-radius: 100px;
         padding: 6px 15px;
-        /* margin-left: 30px; */
 
         background-color: var(--white);
         box-shadow: 0px 8px 10px rgba(0, 0, 0, 0.1);
