@@ -3,12 +3,12 @@ import { useState, useEffect } from 'react';
 import styles from '../../styles/utilities/Calendar.module.css';
 
 import { useMouseoverTarget } from '../../utilities/customHooks';
-import { weekdays, getMonth, formatDate, isSameDate, isSameMonth, isBefore, months } from '../../utilities/customService';
+import { weekdays, getMonth, formatDate, isSameDate, isSameMonth, isBefore } from '../../utilities/customService';
 
 function Calendar({ rows, from, to, date, setDate }) {
     const target = useMouseoverTarget('calendar');
-
     const today = formatDate(new Date());
+
     const [ month, setMonth ] = useState(getMonth(new Date(date.year, date.month, 1)));
     const [ calendar, setCalendar ] = useState([]);
 
@@ -59,40 +59,42 @@ function Calendar({ rows, from, to, date, setDate }) {
 
     // get status of the day
     const getStatus = (statusId) => {
-        let hoverExist = target.split('_')[1] !== undefined;
-        let hovered = formatDate(new Date(date.year, parseInt(target.split('_')[2]), parseInt(target.split('_')[1])));
-        let nSelected = formatDate(new Date(date.year, date.month, statusId));
+        let bothExist = from && to;
+        let current = formatDate(new Date(date.year, date.month, statusId));
 
-        if ((statusId === 100 || statusId === -100) && ((from && to && !isSameMonth(from, to)) || (hoverExist && from && !to && isBefore(from, hovered) && !isSameMonth(from, hovered)))) {            
-            if (statusId === -100 && from.month < date.month && ((to && date.month <= to.month) || (hoverExist && from && !to && date.month <= hovered.month)))
+        let hoverExist = target.split('_')[1] && from && !to;
+        let hovered = formatDate(new Date(date.year, parseInt(target.split('_')[2]), parseInt(target.split('_')[1])));
+        
+        if ((statusId === 100 || statusId === -100) && ((bothExist && !isSameMonth(from, to)) || (hoverExist && isBefore(from, hovered) && !isSameMonth(from, hovered)))) {            
+            if (statusId === -100 && from.month < date.month && ((to && date.month <= to.month) || (hoverExist && date.month <= hovered.month)))
                 return 'gradient gLeft';
 
-            if (statusId === 100 && from.month <= date.month && ((to && date.month < to.month) || (hoverExist && from && !to && date.month < hovered.month)))
+            if (statusId === 100 && from.month <= date.month && ((to && date.month < to.month) || (hoverExist && date.month < hovered.month)))
                 return 'gradient gRight';
 
             return 'empty';
         }
 
-        if ((from && isBefore(from, nSelected) && to && isBefore(nSelected, to)) || (hoverExist && from && !to && isBefore(from, nSelected) && isBefore(today, nSelected) && isBefore(nSelected, hovered))) {
-            if (nSelected.day === 'Sunday')
+        if ((bothExist && isBefore(from, current) && isBefore(current, to)) || (hoverExist && isBefore(from, current) && isBefore(today, current) && isBefore(current, hovered))) {
+            if (current.day === 'Sunday')
                 return 'between bLeft';
 
-            if (nSelected.day === 'Saturday')
+            if (current.day === 'Saturday')
                 return 'between bRight';
 
             return 'between';
         }
         
-        if (from && isSameDate(nSelected, from) && to && isSameDate(nSelected, to))
+        if (bothExist && isSameDate(current, from) && isSameDate(current, to))
             return 'selected sOne';
 
-        if (from && isSameDate(nSelected, from)) 
+        if (from && isSameDate(current, from)) 
             return 'selected sFrom';
 
-        if ((to && isSameDate(nSelected, to) || (hoverExist && from && !to && isSameDate(nSelected, hovered))))
+        if ((to && isSameDate(current, to) || (hoverExist && isSameDate(current, hovered))))
             return 'selected sTo';
 
-        return isBefore(nSelected, today) ? 'before' : 'after';
+        return isBefore(current, today) ? 'before' : 'after';
     };
 
     return (

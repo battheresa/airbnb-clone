@@ -284,7 +284,7 @@ function Header() {
             {/* search (small screen) */}
             <div className={styles.searchInput}>
                 <SearchRoundedIcon style={{ color: 'var(--black)' }} />
-                <input placeholder='Where are you going?' />
+                <input placeholder='Where are you going?' value={searchLocation} onChange={(e) => setSearchLocation(e.target.value)} />
             </div>
 
             {/* search (normal/large screen) */}
@@ -373,7 +373,7 @@ function Header() {
             <div className={styles.background} style={backgroundStyle} />
 
             {/* screen cover */}
-            <div id='screenCover' className='screenCover' style={{ display: openSearch || offsetY < benchmarkOffsetY ? 'block' : 'none' }} mode={offsetY < benchmarkOffsetY ? 'transparent' : ''} onClick={() => onClickScreenCover()} />
+            <div id='screenCover' className='screenCover' style={{ display: openSearch || searchSubmenu !== -1 ? 'block' : 'none' }} mode={offsetY < benchmarkOffsetY ? 'transparent' : ''} onClick={() => onClickScreenCover()} />
         </div>
     );
 }
