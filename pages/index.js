@@ -7,7 +7,6 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Card from '../components/Card';
 
-import { useWindowDimensions } from '../utilities/customHooks';
 import { tabs, places } from '../utilities/database';
 
 function Home() {

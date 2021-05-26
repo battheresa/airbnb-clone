@@ -45,7 +45,6 @@ function Calendar({ rows, from, to, date, setDate }) {
                 nCalendar.push(temp);
             }
 
-            console.log(rows, nCalendar);
             setCalendar(nCalendar);
         }
     }, [rows, month]);

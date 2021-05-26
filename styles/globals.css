@@ -44,13 +44,13 @@ h1 {
 }
 
 h2 {
-    font-size: 1.5em;
+    font-size: 1.8em;
     font-weight: 600;
 }
 
 h3 {
     font-size: 18px;
-    font-weight: 400;
+    font-weight: 500;
 }
 
 h4 { 
@@ -91,19 +91,19 @@ a:hover {
 }
 
 button {
+    cursor: pointer;
+
     background-color: var(--white);
     border: none;
     border-radius: 5px;
-    transition: 0.4s;
+    transition: 0.2s;
     
     padding: 4px 12px;
     margin: 0px 2px;
-
-    cursor: pointer;
 }
 
 button:hover {
-    background-color: var(--grey004);
+    background-color: var(--grey002);
 }
 
 input {
