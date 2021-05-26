@@ -1,0 +1,48 @@
+.container {
+    display: flex;
+    flex-direction: column;
+
+    position: absolute;
+    top: 72px;
+    left: 0;
+
+    width: 480px;
+    padding: 22px 0px;
+
+    background-color: var(--white);
+    border-radius: 35px;
+    box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.2);
+
+    overflow: hidden;
+}
+
+.menu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    padding: 8px 35px;
+}
+
+.menu:hover {
+    background-color: var(--grey002);
+}
+
+.menu > span {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    width: 48px;
+    height: 48px;
+    margin-right: 18px;
+
+    border: 1px solid var(--grey004);
+    border-radius: 10px;
+    background-color: var(--grey003);
+}
+
+.menu > h4 {
+    font-weight: 300;
+}

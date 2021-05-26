@@ -20,7 +20,7 @@ export function useWindowDimensions() {
 }
 
 export function useWindowOffset() {
-    const [ offset, setOffset ] = useState({ offsetX: undefined, offsetY: undefined });
+    const [ offset, setOffset ] = useState({ offsetX: 0, offsetY: 0 });
     const windowExist = typeof window !== 'undefined';
 
     useEffect(() => {
@@ -49,6 +49,26 @@ export function useMousedownTarget() {
         
             window.addEventListener('mousedown', handleMousedown);
             return () => window.removeEventListener('mousedown', handleMousedown);
+        }
+    }, [windowExist]);
+    
+    return target;
+}
+
+export function useMouseoverTarget(targetId) {
+    const [ target, setTarget ] = useState('');
+    const windowExist = typeof window !== 'undefined';
+
+    useEffect(() => {
+        if (windowExist) {
+            function handleMouseover(event) {
+                if (event.target.id.split('_')[0] === targetId) {
+                    setTarget(event.target.id);
+                }
+            }
+        
+            window.addEventListener('mouseover', handleMouseover);
+            return () => window.removeEventListener('mouseover', handleMouseover);
         }
     }, [windowExist]);
     

@@ -11,14 +11,7 @@ import { useWindowDimensions } from '../utilities/customHooks';
 import { tabs, places } from '../utilities/database';
 
 function Home() {
-    const { width, height } = useWindowDimensions();
     const [ currentTab, setCurrentTab ] = useState(0);
-    
-    // useEffect(() => {
-    //     if (height < 400) {
-            
-    //     }
-    // }, [height]);
 
     return (
         <div>

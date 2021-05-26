@@ -8,6 +8,8 @@ export const searchMenuList = [
     { menu: 'Experiences', submenu: ['Location', 'Date']}
 ];
 
+export const locations = [ 'Australia', 'Canberra, Australia', 'Belgium', 'Brussels, Belgium', 'China', 'Beijing, China', 'Denmark', 'Copenhagen, Denmark', 'Egypt', 'Cairo, Egypt', 'France', 'Paris, France', 'Germany', 'Berlin, Germany', 'Hungary', 'Budapest, Hungary', 'Ireland', 'Dublin, Ireland', 'Japan', 'Tokyo, Japan' ];
+
 export const tabs = ['Destinations for arts & culture', 'Destinations for outdoor adventure', 'Mountain cabins', 'Beach destinations', 'Popular destinations'];
 
 export const places = [

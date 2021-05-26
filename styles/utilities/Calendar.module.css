@@ -1,0 +1,127 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+}
+
+.container > h4 {
+    margin-bottom: 25px;
+}
+
+.days {
+    display: grid;
+    grid-template-columns: repeat(7, auto);
+    row-gap: 3px;
+}
+
+.days > h6 {
+    text-align: center;
+    color: var(--grey006);
+}
+
+.days > div {
+    cursor: pointer;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 50px;
+    height: 50px;
+    position: relative;
+}
+
+.days > div[status=empty] {
+    cursor: default;
+}
+
+.days > div[status=before] {
+    color: var(--grey005);
+}
+
+.days > div[status=after] {
+    color: var(--black);
+}
+
+.days > div[status~=between] {
+    background-color: var(--grey002);
+}
+
+.days > div[status~=bLeft] {
+    border-radius: 5px 0px 0px 5px;
+}
+
+.days > div[status~=bRight] {
+    border-radius: 0px 5px 5px 0px;
+}
+
+.days > div[status=after]::after, .days > div[status~=between]::after {
+    content: '';
+    border: 1.2pt solid var(--transparent);
+    border-radius: 100px;
+
+    position: absolute;
+
+    width: calc(100% - 2.4pt);
+    height: calc(100% - 2.4pt);
+}
+
+.days > div[status=after]:hover::after, .days > div[status~=between]:hover:after {
+    border-color: var(--black);
+}
+
+.days > div[status~=selected] {
+    color: var(--white);
+    background-color: var(--grey002);
+    z-index: 1;
+}
+
+.days > div[status~=sOne] {
+    background-color: var(--transparent);
+    z-index: 1;
+}
+
+.days > div[status~=selected]::after {
+    content: '';
+    background-color: var(--black);
+    border: 1.2pt solid var(--black);
+    border-radius: 100px;
+
+    position: absolute;
+    z-index: -1;
+
+    width: calc(100% - 2.4pt);
+    height: calc(100% - 2.4pt);
+}
+
+.days > div[status~=selected]:hover::after {
+    border-color: var(--grey007);
+}
+
+.days > div[status~=sFrom] {
+    border-radius: 100px 0px 0px 100px;
+}
+
+.days > div[status~=sTo] {
+    border-radius: 0px 100px 100px 0px;
+}
+
+.days > div[status~=gradient] {
+    cursor: default;
+    background-repeat: no-repeat;
+}
+
+.days > div[status~=gLeft] {
+    background-image: -webkit-linear-gradient(left, var(--white), var(--grey002) 80%);
+}
+
+.days > div[status~=gRight] {
+    background-image: -webkit-linear-gradient(right, var(--white), var(--grey002) 80%);
+}
+
+.days > div > p {
+    font-weight: 500;
+}

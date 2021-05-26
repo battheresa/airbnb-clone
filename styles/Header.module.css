@@ -172,6 +172,23 @@
     margin-top: -7px;
 }
 
+.searchFieldMenu > input {
+    font-weight: 500;
+}
+
+.searchFieldMenu > input::placeholder {
+    font-weight: 300;
+}
+
+.searchFieldMenu > div > p:first-child {
+    color: var(--grey006);
+}
+
+.searchFieldMenu > div > p:last-child {
+    color: var(--black);
+    font-weight: 500;
+}
+
 .searchFieldMenu > .searchIcon {
     position: absolute;
     right: 6px;
@@ -182,6 +199,7 @@
     border-radius: 100px;
     box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.2);
     background-color: var(--white);
+    transform: scaleX(1.005) scaleY(1.05);
 }
 
 .searchFieldMenuActive:hover {
