@@ -1,3 +1,5 @@
+import { useRouter } from 'next/router';
+
 import { useState, useEffect, useRef } from 'react';
 
 import styles from '../styles/Header.module.css';
@@ -13,10 +15,12 @@ import MenuRoundedIcon from '@material-ui/icons/MenuRounded';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { useWindowDimensions, useWindowOffset, useMousedownTarget } from '../utilities/customHooks';
-import { isBefore, isSameDate, isSameMonth } from '../utilities/customService';
+import { formatDate, isBefore, isSameDate, isSameMonth } from '../utilities/customService';
 import { deviceBreakpoint, logoFullURL, logoMiniURL, searchMenuList, locations } from '../utilities/database';
 
 function Header() {
+    const router = useRouter();
+
     const { width, height } = useWindowDimensions();
     const { offsetX, offsetY } = useWindowOffset(); 
     const target = useMousedownTarget();
@@ -24,7 +28,7 @@ function Header() {
     const benchmarkOffsetY = 120;
     const [ curOffsetY, setCurOffsetY ] = useState(0);
 
-    const [ logo, setLogo ] = useState(logoFullURL.white);
+    const [ logo, setLogo ] = useState(logoFullURL.coral);
     const [ backgroundStyle, setBackgroundStyle ] = useState({ backgroundColor: 'var(--transparent)', boxShadow: 'none', top: '-140px' });
 
     const [ search, setSearch ]  = useState(true);
@@ -75,43 +79,58 @@ function Header() {
     // config animation order
     useChain(search || openSearch ? [searchFieldRef, searchFieldMenuRef] : [searchFieldMenuRef, searchFieldRef], [0, 0.1]);
 
+    // parse search query from url
+    useEffect(() => {
+        if (router.query.location) {
+            let from = router.query.checkin.split('-');
+            let dateFrom = formatDate(new Date(parseInt(from[0]), parseInt(from[1]), parseInt(from[2])));
+            
+            let to = router.query.checkout.split('-');
+            let dateTo = formatDate(new Date(parseInt(to[0]), parseInt(to[1]), parseInt(to[2])));
+            
+            if (Object.entries(router.query).length === 3) {
+                let dateText = dateFrom.monthText + ' ' + dateFrom.date;
+                dateText += dateFrom.month === dateTo.month ? ' - ' : ' - ' + dateTo.monthText.slice(0, 3) + ' ';
+                dateText += dateTo.date;
+
+                setSearchMenu(1);
+                setSearchDateExperience({ from: dateFrom, to: dateTo, text: dateText });
+            }
+
+            if (Object.entries(router.query).length === 4) {
+                let guest = router.query.guest.split('-');
+                let guestText = `${parseInt(guest[0]) + parseInt(guest[1])} guest${parseInt(guest[0]) + parseInt(guest[1]) <= 1 ? '' : 's'}`;
+
+                if (parseInt(guest[2]) > 0)
+                    guestText += `, ${parseInt(guest[2])} infant${parseInt(guest[2]) === 1 ? '' : 's'}`;
+
+                if (parseInt(guest[0]) + parseInt(guest[1]) + parseInt(guest[2]) === 0)
+                    guestText = '';
+
+                setSearchMenu(0);
+                setSearchDateStay({ from: dateFrom, fromText: dateFrom.monthText.slice(0, 3) + ' ' + dateFrom.date, to: dateTo, toText: dateTo.monthText.slice(0, 3) + ' ' + dateTo.date });
+                setSearchGuest({ total: guestText, adults: parseInt(guest[0]), children: parseInt(guest[1]), infants: parseInt(guest[2]) });
+            }
+
+            setSearchLocation(router.query.location.replace('-', ', '));
+        }
+    }, [router.query]);
+
     // update background styling
     useEffect(() => {
         let nBackground = {};
-        nBackground.backgroundColor = 'var(--transparent)';
-        nBackground.boxShadow = 'none';
-        nBackground.top = '-140px';
-
-        if (offsetY > benchmarkOffsetY) {
-            nBackground.backgroundColor = 'var(--white)';
-            nBackground.boxShadow = '0px 2px 6px rgba(0, 0, 0, 0.1)';
-            nBackground.top = search ? width < deviceBreakpoint.medium - 60 ? '0px' : '-55px' : '-140px';
-        }
+        nBackground.backgroundColor = 'var(--white)';
+        nBackground.boxShadow = '0px 2px 6px rgba(0, 0, 0, 0.1)';
+        nBackground.top = search ? width < deviceBreakpoint.medium - 60 ? '0px' : '-55px' : '-140px';
 
         setBackgroundStyle(nBackground);
-        setSearch(offsetY > benchmarkOffsetY ? openSearch : true);
+        setSearch(openSearch);
         setOpenSearch(Math.abs(curOffsetY - offsetY) > benchmarkOffsetY + 50 ? false : openSearch);
     }, [search, openSearch, offsetY]);
 
     // update content on width change
     useEffect(() => {
-        let nlogo = undefined;
-
-        if (width < deviceBreakpoint.medium) {
-            nlogo = logoMiniURL.white;
-
-            if (offsetY > benchmarkOffsetY) {
-                nlogo = logoMiniURL.black;
-            }
-        }
-        else {
-            nlogo = logoFullURL.white;
-
-            if (offsetY > benchmarkOffsetY) {
-                nlogo = logoFullURL.black;
-            }
-        }
-
+        let nlogo = width < deviceBreakpoint.medium ? logoMiniURL.coral : logoFullURL.coral;
         setLogo(nlogo !== undefined ? nlogo : logo);
     }, [width, offsetY]);
 
@@ -134,6 +153,40 @@ function Header() {
             setSearchLocationList(nLocations);
         }
     }, [searchLocation]);
+
+    // redirect page
+    const changeRoute = (event, path, params) => {
+        event.preventDefault();
+
+        if (params) {
+            let fullPath = path + '?';
+
+            Object.entries(params).forEach(item => {
+                fullPath += item[0] + '=';
+
+                console.log(item);
+
+                if (typeof item[1] === 'string')
+                    fullPath += item[1].replace(' ', '').replace(',', '-');
+
+                if (typeof item[1] === 'object') {
+                    if (item[1].date !== undefined)
+                        fullPath += item[1].year + '-' + item[1].month + '-' + item[1].date;
+
+                    if (item[1].adults !== undefined)
+                        fullPath += item[1].adults + '-' + item[1].children + '-' + item[1].infants;
+                }
+
+                if (item[0] !== Object.keys(params)[Object.keys(params).length - 1])
+                    fullPath += '&';
+            });
+            
+            router.push(fullPath);
+            return;
+        }
+
+        router.push(path);
+    };
 
     // update on click screen cover
     const onClickScreenCover = () => {
@@ -215,8 +268,8 @@ function Header() {
     const getSubmenuStyle = (menu, submenu) => {
         let nStyle = {};
         nStyle.display = (searchMenu === menu || submenu === 0) ? 'flex' : 'none';
-        
-        if (!search) { nStyle.color = 'var(--white)'; }
+        nStyle.color = 'var(--black)';
+
         if (submenu === 0) { nStyle.maxWidth = searchMenu === 0 ? '30%' : '50%'; }
         if (submenu === 3) { nStyle.minWidth = '25%'; }
 
@@ -276,10 +329,10 @@ function Header() {
     };
 
     return (
-        <div className={styles.container} style={{ color: offsetY > benchmarkOffsetY ? 'var(--black)' : 'var(--white)' }}>
+        <div className={styles.container} style={{ color: 'var(--black)' }} version='other'>
             
             {/* logo */}
-            <img className={styles.logo} src={logo} alt='airbnb-logo' />
+            <img className={styles.logo} src={logo} alt='airbnb-logo' onClick={(e) => changeRoute(e, '/')} />
 
             {/* search (small screen) */}
             <div className={styles.searchInput}>
@@ -292,7 +345,16 @@ function Header() {
 
                 {/* search button */}
                 {!search && <button className={styles.searchButton} onClick={() => onClickOpenSearch()}>
-                    <h5>Start your search</h5>
+                    {searchDateStay.from && <h5 className={styles.searchText} style={{ width: 'fit-content', marginRight: '20px' }}>
+                        <span>{searchLocation?.split(',')[0]}</span>
+                        <span>{searchDateStay?.fromText} - {searchDateStay?.from?.month === searchDateStay?.to?.month ? searchDateStay?.to?.date : searchDateStay?.toText}</span>
+                        <span>{searchGuest?.total.split(',')[0]}</span>
+                    </h5>}
+                    {searchDateExperience.from && <h5 className={styles.searchText} style={{ width: 'fit-content', marginRight: '20px' }}>
+                        <span>{searchLocation?.split(',')[0]}</span>
+                        <span>{searchDateExperience?.text}</span>
+                    </h5>}
+                    {!searchLocation && <h5 className={styles.searchText}>Start your search</h5>}
                     <span className={styles.searchIcon}><SearchRoundedIcon fontSize='small' /></span>
                 </button>}
 
@@ -301,7 +363,7 @@ function Header() {
                     {searchMenuList.map((item, i) => (
                         <div key={`menu_${item.menu}`} className={`${styles.searchMenuButton} ${searchMenu === i ? styles.searchMenuButtonActive : styles.searchMenuButtonInactive}`} onClick={() => onClickMenu(i)}>
                             <p>{item.menu}</p>
-                            <div style={{ backgroundColor: offsetY > benchmarkOffsetY ? 'var(--black)' : 'var(--white)' }} />
+                            <div style={{ backgroundColor: 'var(--black)' }} />
                         </div>
                     ))}
                 </div>}
@@ -340,7 +402,7 @@ function Header() {
                                 <p><small>{searchGuest.total === '' && 'Add guests'}</small></p>
                                 <p><small>{searchGuest.total !== '' && searchGuest.total}</small></p>
                             </div>
-                            <span className={styles.searchIcon}><SearchRoundedIcon /></span>
+                            <span className={styles.searchIcon} onClick={(e) => changeRoute(e, '/search', { location: searchLocation, checkin: searchDateStay.from, checkout: searchDateStay.to, guest: searchGuest })}><SearchRoundedIcon /></span>
                         </div>
                         <GuestInput open={searchSubmenu === 3} guest={searchGuest} setGuest={onEnterSearchGuest}/>
 
@@ -351,7 +413,7 @@ function Header() {
                                 <p><small>{searchDateExperience.text === '' && 'Add when you want to go'}</small></p>
                                 <p><small>{searchDateExperience.text !== '' && searchDateExperience.text}</small></p>
                             </div>
-                            <span className={styles.searchIcon}><SearchRoundedIcon /></span>
+                            <span className={styles.searchIcon} onClick={(e) => changeRoute(e, '/search', { location: searchLocation, checkin: searchDateExperience.from, checkout: searchDateExperience.to })}><SearchRoundedIcon /></span>
                         </div>
                         <DateInput open={searchSubmenu === 4} mode={false} submenu={searchSubmenu} date={searchDateExperience} setDate={onEnterSearchDateExperience} />
                     </animated.div>

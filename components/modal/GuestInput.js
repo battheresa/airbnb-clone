@@ -28,9 +28,9 @@ function GuestInput({ open, guest, setGuest }) {
         if (group === 'infants')
             nInfants += 1;
 
-        let nTotal = `${nAdults + nChildren} guest`;
+        let nTotal = `${nAdults + nChildren} guest${nAdults + nChildren <= 1 ? '' : 's'}`;
         if (nInfants > 0)
-            nTotal += `, ${nInfants} infant${nInfants === 1 ? '' : 's'}`;
+            nTotal += `, ${nInfants} infant${nInfants <= 1 ? '' : 's'}`;
 
         if (nAdults + nChildren + nInfants === 0)
             nTotal = '';
