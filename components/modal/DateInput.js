@@ -7,9 +7,14 @@ import Calendar from '../utilities/Calendar';
 
 import styles from '../../styles/modal/DateInput.module.css';
 
+import { deviceBreakpoint } from '../../utilities/database';
+import { useWindowDimensions } from '../../utilities/customHooks';
 import { getMonth, formatDate, isBefore } from '../../utilities/customService';
 
 function DateInput({ open, mode, submenu, date, setDate }) {
+    const { width, height } = useWindowDimensions();
+    const [ secondCalendar, setSecondCalendar ] = useState(true);
+    
     const [ from, setFrom ] = useState(date.from);
     const [ to, setTo ] = useState(date.to);
     
@@ -25,6 +30,16 @@ function DateInput({ open, mode, submenu, date, setDate }) {
         let toRows = getMonth(new Date(month2.year, month2.year, 1)).rows;
         setRows(Math.max(fromRows, toRows));
     }, []);
+
+    // toggle between single and double calendar
+    useEffect(() => {
+        if (width && width < deviceBreakpoint.medium - 60) {
+            setSecondCalendar(false);
+        }
+        else {
+            setSecondCalendar(true);
+        }
+    }, [width]);
 
     // update selected dates
     const setSelectedDate = (selectedDate) => {
@@ -59,8 +74,8 @@ function DateInput({ open, mode, submenu, date, setDate }) {
             <div className={styles.arrows} position='left' onClick={() => moveCalendar(-1)}><ChevronLeftRoundedIcon /></div>
 
             <div className={styles.calendars}>
-                <Calendar rows={rows} from={from} to={to} date={month1} setDate={setSelectedDate} />
-                <Calendar rows={rows} from={from} to={to} date={month2} setDate={setSelectedDate} />
+                <div><Calendar rows={rows} from={from} to={to} date={month1} setDate={setSelectedDate} /></div>
+                <div style={{ display: secondCalendar ? 'block' : 'none' }}><Calendar rows={rows} from={from} to={to} date={month2} setDate={setSelectedDate} /></div>
             </div>
 
             <div className={styles.arrows} position='right' onClick={() => moveCalendar(1)}><ChevronRightRoundedIcon /></div>
