@@ -6,13 +6,13 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import InstagramIcon from '@material-ui/icons/Instagram';
 
-import { footerNavigation } from '../utilities/database.js';
+import { navingations } from '../utilities/config.js';
 
 function Footer() {
     return (
         <div className={styles.container}>
             <div className={styles.navigation}>
-                {footerNavigation.map(section => (
+                {navingations.map(section => (
                     <div key={section.header} className={styles.section}>
                         <h6>{section.header.toUpperCase()}</h6>
                         <div>
@@ -27,7 +27,7 @@ function Footer() {
             <div className={styles.information}>
                 {/* copy rights */}
                 <div className={styles.credit} name='before'>
-                    <p>&copy; 2021 Airbnb Clone Project. No rights reserved.</p>
+                    <p>&copy; 2021 Airbnb Clone Project.</p>
                 </div>
 
                 {/* language and currency */}
@@ -39,7 +39,7 @@ function Footer() {
 
                     <div className={styles.button}>
                         <AttachMoneyRoundedIcon fontSize='small' style={{ marginRight: '2px' }} />
-                        <h5>HKD</h5>
+                        <h5>THB</h5>
                     </div>
                 </div>
 
@@ -52,7 +52,7 @@ function Footer() {
 
                 {/* copy rights */}
                 <div className={styles.credit} name='after'>
-                    <p>&copy; 2021 Airbnb Clone Project. No rights reserved.</p>
+                    <p>&copy; 2021 Airbnb Clone Project.</p>
                 </div>
             </div>
         </div>

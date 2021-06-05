@@ -42,3 +42,7 @@ export function isBefore(date1, date2) {
     
     return nDate1 < nDate2;
 }
+
+export function shuffle(list) {
+    return list.sort(() => Math.random() - 0.5);;
+}

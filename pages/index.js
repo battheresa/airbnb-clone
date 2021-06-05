@@ -1,18 +1,24 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from '../styles/Home.module.css';
 
 import Header from '../components/HeaderHome';
 import Footer from '../components/Footer';
-import Card from '../components/Card';
+import Card from '../components/inline/Card';
 
-import { tabs, places } from '../utilities/database';
+import { getTabsLocations } from '../utilities/services';
 
 function Home() {
     const router = useRouter();
+    const [ tabs, setTabs ] = useState([]);
     const [ currentTab, setCurrentTab ] = useState(0);
+
+    // get tabs from db
+    useEffect(() => {
+        getTabsLocations().then(content => setTabs(content));
+    }, []);
 
     // change routes
     const changeRoute = (event, path) => {
@@ -74,16 +80,16 @@ function Home() {
                 <div className={styles.section}>
                     <h2>Inspiration for future getaways</h2>
                     <div className={styles.tabHeader}>
-                        {tabs.map((item, i) => (
-                            <div key={item} className={`${i === currentTab ? styles.tabActive : styles.tabInactive}`} onClick={() => setCurrentTab(i)}>
-                                <button><h5>{item}</h5></button>
+                        {tabs?.map((item, i) => (
+                            <div key={item.header} className={`${i === currentTab ? styles.tabActive : styles.tabInactive}`} onClick={() => setCurrentTab(i)}>
+                                <button><h5>{item.header}</h5></button>
                                 <div />
                             </div>
                         ))}
                     </div>
 
                     <div className={styles.tabContent}>
-                        {places[currentTab].map(item => (
+                        {tabs[currentTab]?.content.map(item => (
                             <div key={item.location}>
                                 <p>{item.location}</p>
                                 <p>{item.state}</p>

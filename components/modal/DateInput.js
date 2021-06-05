@@ -7,7 +7,7 @@ import Calendar from '../utilities/Calendar';
 
 import styles from '../../styles/modal/DateInput.module.css';
 
-import { deviceBreakpoint } from '../../utilities/database';
+import { deviceBreakpoint } from '../../utilities/config';
 import { useWindowDimensions } from '../../utilities/customHooks';
 import { getMonth, formatDate, isBefore } from '../../utilities/customService';
 

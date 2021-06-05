@@ -16,7 +16,8 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { useWindowDimensions, useWindowOffset, useMousedownTarget } from '../utilities/customHooks';
 import { isBefore, isSameDate, isSameMonth } from '../utilities/customService';
-import { deviceBreakpoint, logoFullURL, logoMiniURL, searchMenuList, locations } from '../utilities/database';
+import { deviceBreakpoint, logoFull, logoMini, searchFilter } from '../utilities/config';
+import { getSearchLocations } from '../utilities/services';
 
 function Header() {
     const router = useRouter();
@@ -28,7 +29,7 @@ function Header() {
     const benchmarkOffsetY = 120;
     const [ curOffsetY, setCurOffsetY ] = useState(0);
 
-    const [ logo, setLogo ] = useState(logoFullURL.black);
+    const [ logo, setLogo ] = useState(logoFull.black);
     const [ backgroundStyle, setBackgroundStyle ] = useState({ backgroundColor: 'var(--transparent)', boxShadow: 'none', top: '-140px' });
 
     const [ search, setSearch ]  = useState(true);
@@ -39,8 +40,9 @@ function Header() {
 
     const submenuList = [useRef(), useRef(), useRef(), useRef(), useRef()];
 
-    const [ searchLocation, setSearchLocation ] = useState('');
+    const [ locations, setLocations ] = useState([]);
     const [ searchLocationList, setSearchLocationList ] = useState([]);
+    const [ searchLocation, setSearchLocation ] = useState('');
 
     const [ searchGuest, setSearchGuest ] = useState({ total: '', adults: 0, children: 0, infants: 0 });
     const [ searchDateStay, setSearchDateStay ] = useState({ from: undefined, fromText: '', to: undefined, toText: '' });
@@ -79,6 +81,11 @@ function Header() {
     // config animation order
     useChain(search || openSearch ? [searchFieldRef, searchFieldMenuRef] : [searchFieldMenuRef, searchFieldRef], [0, 0.1]);
 
+    // get search locations
+    useEffect(() => {
+        getSearchLocations().then(content => setLocations(content));
+    }, []);
+
     // update background styling
     useEffect(() => {
         let nBackground = {};
@@ -102,17 +109,17 @@ function Header() {
         let nlogo = undefined;
 
         if (width < deviceBreakpoint.medium) {
-            nlogo = logoMiniURL.white;
+            nlogo = logoMini.white;
 
             if (offsetY > benchmarkOffsetY) {
-                nlogo = logoMiniURL.black;
+                nlogo = logoMini.black;
             }
         }
         else {
-            nlogo = logoFullURL.white;
+            nlogo = logoFull.white;
 
             if (offsetY > benchmarkOffsetY) {
-                nlogo = logoFullURL.black;
+                nlogo = logoFull.black;
             }
         }
 
@@ -137,7 +144,7 @@ function Header() {
 
             setSearchLocationList(nLocations);
         }
-    }, [searchLocation]);
+    }, [locations, searchLocation]);
 
     // redirect page
     const changeRoute = (event, path, params) => {
@@ -336,7 +343,7 @@ function Header() {
 
                 {/* search menu */}
                 {search && <div className={styles.searchMenu}>
-                    {searchMenuList.map((item, i) => (
+                    {searchFilter.map((item, i) => (
                         <div key={`menu_${item.menu}`} className={`${styles.searchMenuButton} ${searchMenu === i ? styles.searchMenuButtonActive : styles.searchMenuButtonInactive}`} onClick={() => onClickMenu(i)}>
                             <p>{item.menu}</p>
                             <div style={{ backgroundColor: offsetY > benchmarkOffsetY ? 'var(--black)' : 'var(--white)' }} />
@@ -350,21 +357,21 @@ function Header() {
 
                         {/* common submenu */}
                         <div className={`${styles.searchFieldMenu} ${styles.searchFieldMenuSeperator}`} style={getSubmenuStyle(-1, 0)} onMouseEnter={() => onMouseEnterSubmenu(0)} onMouseLeave={() => onMouseLeaveSubmenu(0)} onClick={() => onClickSubmenu(0)} ref={submenuList[0]}>
-                            <h6>{searchMenuList[0].submenu[0]}</h6>
+                            <h6>{searchFilter[0].submenu[0]}</h6>
                             <input placeholder='Where are you going?' value={searchLocation} onChange={(e) => setSearchLocation(e.target.value)} />
                         </div>
                         <MenuList open={searchSubmenu === 0} content={searchLocationList} setSelected={onEnterSearchLocation} />
                         
                         {/* first submenu group */}
                         <div className={`${styles.searchFieldMenu} ${styles.searchFieldMenuSeperator}`} style={getSubmenuStyle(0, 1)} onMouseEnter={() => onMouseEnterSubmenu(1)} onMouseLeave={() => onMouseLeaveSubmenu(1)} onClick={() => onClickSubmenu(1)} ref={submenuList[1]}>
-                            <h6>{searchMenuList[0].submenu[1]}</h6>
+                            <h6>{searchFilter[0].submenu[1]}</h6>
                             <div>
                                 <p><small>{searchDateStay.fromText === '' && 'Add dates'}</small></p>
                                 <p><small>{searchDateStay.fromText !== '' && searchDateStay.fromText}</small></p>
                             </div>
                         </div>
                         <div className={`${styles.searchFieldMenu} ${styles.searchFieldMenuSeperator}`} style={getSubmenuStyle(0, 2)} onMouseEnter={() => onMouseEnterSubmenu(2)} onMouseLeave={() => onMouseLeaveSubmenu(2)} onClick={() => onClickSubmenu(2)} ref={submenuList[2]}>
-                            <h6>{searchMenuList[0].submenu[2]}</h6>
+                            <h6>{searchFilter[0].submenu[2]}</h6>
                             <div>
                                 <p><small>{searchDateStay.toText === '' && 'Add dates'}</small></p>
                                 <p><small>{searchDateStay.toText !== '' && searchDateStay.toText}</small></p>
@@ -373,7 +380,7 @@ function Header() {
                         <DateInput open={searchSubmenu === 1 || searchSubmenu === 2} mode={true} submenu={searchSubmenu} date={searchDateStay} setDate={onEnterSearchDateStay} />
 
                         <div className={styles.searchFieldMenu} style={getSubmenuStyle(0, 3)} onClick={() => onClickSubmenu(3)} onMouseEnter={() => onMouseEnterSubmenu(3)} onMouseLeave={() => onMouseLeaveSubmenu(3)} ref={submenuList[3]}>
-                            <h6>{searchMenuList[0].submenu[3]}</h6>
+                            <h6>{searchFilter[0].submenu[3]}</h6>
                             <div>
                                 <p><small>{searchGuest.total === '' && 'Add guests'}</small></p>
                                 <p><small>{searchGuest.total !== '' && searchGuest.total}</small></p>
@@ -384,7 +391,7 @@ function Header() {
 
                         {/* second submenu group */}
                         <div className={styles.searchFieldMenu} style={getSubmenuStyle(1, 1)} onClick={() => onClickSubmenu(4)} onMouseEnter={() => onMouseEnterSubmenu(4)} onMouseLeave={() => onMouseLeaveSubmenu(4)} ref={submenuList[4]}>
-                            <h6>{searchMenuList[1].submenu[1]}</h6>
+                            <h6>{searchFilter[1].submenu[1]}</h6>
                             <div>
                                 <p><small>{searchDateExperience.text === '' && 'Add when you want to go'}</small></p>
                                 <p><small>{searchDateExperience.text !== '' && searchDateExperience.text}</small></p>

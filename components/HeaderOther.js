@@ -16,7 +16,9 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 import { useWindowDimensions, useWindowOffset, useMousedownTarget } from '../utilities/customHooks';
 import { formatDate, isBefore, isSameDate, isSameMonth } from '../utilities/customService';
-import { deviceBreakpoint, logoFullURL, logoMiniURL, searchMenuList, locations } from '../utilities/database';
+import { deviceBreakpoint, logoFull, logoMini, searchFilter } from '../utilities/config';
+import { getSearchLocations } from '../utilities/services';
+
 
 function Header() {
     const router = useRouter();
@@ -28,7 +30,7 @@ function Header() {
     const benchmarkOffsetY = 120;
     const [ curOffsetY, setCurOffsetY ] = useState(0);
 
-    const [ logo, setLogo ] = useState(logoFullURL.coral);
+    const [ logo, setLogo ] = useState(logoFull.coral);
     const [ backgroundStyle, setBackgroundStyle ] = useState({ backgroundColor: 'var(--transparent)', boxShadow: 'none', top: '-140px' });
 
     const [ search, setSearch ]  = useState(true);
@@ -39,8 +41,11 @@ function Header() {
 
     const submenuList = [useRef(), useRef(), useRef(), useRef(), useRef()];
 
-    const [ searchLocation, setSearchLocation ] = useState('');
+    const [ searchButtonText, setSearchButtonText ] = useState('Start your search');
+
+    const [ locations, setLocations ] = useState([]);
     const [ searchLocationList, setSearchLocationList ] = useState([]);
+    const [ searchLocation, setSearchLocation ] = useState('');
 
     const [ searchGuest, setSearchGuest ] = useState({ total: '', adults: 0, children: 0, infants: 0 });
     const [ searchDateStay, setSearchDateStay ] = useState({ from: undefined, fromText: '', to: undefined, toText: '' });
@@ -79,6 +84,11 @@ function Header() {
     // config animation order
     useChain(search || openSearch ? [searchFieldRef, searchFieldMenuRef] : [searchFieldMenuRef, searchFieldRef], [0, 0.1]);
 
+    // get search locations
+    useEffect(() => {
+        getSearchLocations().then(content => setLocations(content));
+    }, []);
+
     // parse search query from url
     useEffect(() => {
         if (router.query.location) {
@@ -87,11 +97,15 @@ function Header() {
             
             let to = router.query.checkout.split('-');
             let dateTo = formatDate(new Date(parseInt(to[0]), parseInt(to[1]), parseInt(to[2])));
+
+            let buttonText = { location: router.query.location.replace('-', ', ') };
             
             if (Object.entries(router.query).length === 3) {
                 let dateText = dateFrom.monthText + ' ' + dateFrom.date;
                 dateText += dateFrom.month === dateTo.month ? ' - ' : ' - ' + dateTo.monthText.slice(0, 3) + ' ';
                 dateText += dateTo.date;
+
+                buttonText.date = dateText;
 
                 setSearchMenu(1);
                 setSearchDateExperience({ from: dateFrom, to: dateTo, text: dateText });
@@ -107,11 +121,15 @@ function Header() {
                 if (parseInt(guest[0]) + parseInt(guest[1]) + parseInt(guest[2]) === 0)
                     guestText = '';
 
+                buttonText.date = dateFrom.monthText.slice(0, 3) + ' ' + dateFrom.date + ' - ' + (dateFrom.month === dateTo.month ? dateTo.date : dateTo.monthText.slice(0, 3) + ' ' + dateTo.date);
+                buttonText.guest = guestText.split(',')[0];
+
                 setSearchMenu(0);
                 setSearchDateStay({ from: dateFrom, fromText: dateFrom.monthText.slice(0, 3) + ' ' + dateFrom.date, to: dateTo, toText: dateTo.monthText.slice(0, 3) + ' ' + dateTo.date });
                 setSearchGuest({ total: guestText, adults: parseInt(guest[0]), children: parseInt(guest[1]), infants: parseInt(guest[2]) });
             }
 
+            setSearchButtonText(buttonText);
             setSearchLocation(router.query.location.replace('-', ', '));
         }
     }, [router.query]);
@@ -130,7 +148,7 @@ function Header() {
 
     // update content on width change
     useEffect(() => {
-        let nlogo = width < deviceBreakpoint.medium ? logoMiniURL.coral : logoFullURL.coral;
+        let nlogo = width < deviceBreakpoint.medium ? logoMini.coral : logoFull.coral;
         setLogo(nlogo !== undefined ? nlogo : logo);
     }, [width, offsetY]);
 
@@ -152,7 +170,7 @@ function Header() {
 
             setSearchLocationList(nLocations);
         }
-    }, [searchLocation]);
+    }, [locations, searchLocation]);
 
     // redirect page
     const changeRoute = (event, path, params) => {
@@ -345,22 +363,24 @@ function Header() {
 
                 {/* search button */}
                 {!search && <button className={styles.searchButton} onClick={() => onClickOpenSearch()}>
-                    {searchDateStay.from && <h5 className={styles.searchText} style={{ width: 'fit-content', marginRight: '20px' }}>
-                        <span>{searchLocation?.split(',')[0]}</span>
-                        <span>{searchDateStay?.fromText} - {searchDateStay?.from?.month === searchDateStay?.to?.month ? searchDateStay?.to?.date : searchDateStay?.toText}</span>
-                        <span>{searchGuest?.total.split(',')[0]}</span>
+                    
+                    {/* search filters */}
+                    {typeof searchButtonText === 'object' && <h5 className={styles.searchText} style={{ width: 'fit-content', marginRight: '20px' }}>
+                        <span>{searchButtonText?.location?.split(',')[0]}</span>
+                        <span>{searchButtonText?.date}</span>
+                        {searchButtonText?.guest && <span>{searchButtonText?.guest}</span>}
                     </h5>}
-                    {searchDateExperience.from && <h5 className={styles.searchText} style={{ width: 'fit-content', marginRight: '20px' }}>
-                        <span>{searchLocation?.split(',')[0]}</span>
-                        <span>{searchDateExperience?.text}</span>
-                    </h5>}
-                    {!searchLocation && <h5 className={styles.searchText}>Start your search</h5>}
+
+                    {/* default text */}
+                    {typeof searchButtonText === 'string' && <h5 className={styles.searchText}>{searchButtonText}</h5>}
+
+                    {/* search icon */}
                     <span className={styles.searchIcon}><SearchRoundedIcon fontSize='small' /></span>
                 </button>}
 
                 {/* search menu */}
                 {search && <div className={styles.searchMenu}>
-                    {searchMenuList.map((item, i) => (
+                    {searchFilter.map((item, i) => (
                         <div key={`menu_${item.menu}`} className={`${styles.searchMenuButton} ${searchMenu === i ? styles.searchMenuButtonActive : styles.searchMenuButtonInactive}`} onClick={() => onClickMenu(i)}>
                             <p>{item.menu}</p>
                             <div style={{ backgroundColor: 'var(--black)' }} />
@@ -374,21 +394,21 @@ function Header() {
 
                         {/* common submenu */}
                         <div className={`${styles.searchFieldMenu} ${styles.searchFieldMenuSeperator}`} style={getSubmenuStyle(-1, 0)} onMouseEnter={() => onMouseEnterSubmenu(0)} onMouseLeave={() => onMouseLeaveSubmenu(0)} onClick={() => onClickSubmenu(0)} ref={submenuList[0]}>
-                            <h6>{searchMenuList[0].submenu[0]}</h6>
+                            <h6>{searchFilter[0].submenu[0]}</h6>
                             <input placeholder='Where are you going?' value={searchLocation} onChange={(e) => setSearchLocation(e.target.value)} />
                         </div>
                         <MenuList open={searchSubmenu === 0} content={searchLocationList} setSelected={onEnterSearchLocation} />
                         
                         {/* first submenu group */}
                         <div className={`${styles.searchFieldMenu} ${styles.searchFieldMenuSeperator}`} style={getSubmenuStyle(0, 1)} onMouseEnter={() => onMouseEnterSubmenu(1)} onMouseLeave={() => onMouseLeaveSubmenu(1)} onClick={() => onClickSubmenu(1)} ref={submenuList[1]}>
-                            <h6>{searchMenuList[0].submenu[1]}</h6>
+                            <h6>{searchFilter[0].submenu[1]}</h6>
                             <div>
                                 <p><small>{searchDateStay.fromText === '' && 'Add dates'}</small></p>
                                 <p><small>{searchDateStay.fromText !== '' && searchDateStay.fromText}</small></p>
                             </div>
                         </div>
                         <div className={`${styles.searchFieldMenu} ${styles.searchFieldMenuSeperator}`} style={getSubmenuStyle(0, 2)} onMouseEnter={() => onMouseEnterSubmenu(2)} onMouseLeave={() => onMouseLeaveSubmenu(2)} onClick={() => onClickSubmenu(2)} ref={submenuList[2]}>
-                            <h6>{searchMenuList[0].submenu[2]}</h6>
+                            <h6>{searchFilter[0].submenu[2]}</h6>
                             <div>
                                 <p><small>{searchDateStay.toText === '' && 'Add dates'}</small></p>
                                 <p><small>{searchDateStay.toText !== '' && searchDateStay.toText}</small></p>
@@ -397,7 +417,7 @@ function Header() {
                         <DateInput open={searchSubmenu === 1 || searchSubmenu === 2} mode={true} submenu={searchSubmenu} date={searchDateStay} setDate={onEnterSearchDateStay} />
 
                         <div className={styles.searchFieldMenu} style={getSubmenuStyle(0, 3)} onClick={() => onClickSubmenu(3)} onMouseEnter={() => onMouseEnterSubmenu(3)} onMouseLeave={() => onMouseLeaveSubmenu(3)} ref={submenuList[3]}>
-                            <h6>{searchMenuList[0].submenu[3]}</h6>
+                            <h6>{searchFilter[0].submenu[3]}</h6>
                             <div>
                                 <p><small>{searchGuest.total === '' && 'Add guests'}</small></p>
                                 <p><small>{searchGuest.total !== '' && searchGuest.total}</small></p>
@@ -408,7 +428,7 @@ function Header() {
 
                         {/* second submenu group */}
                         <div className={styles.searchFieldMenu} style={getSubmenuStyle(1, 1)} onClick={() => onClickSubmenu(4)} onMouseEnter={() => onMouseEnterSubmenu(4)} onMouseLeave={() => onMouseLeaveSubmenu(4)} ref={submenuList[4]}>
-                            <h6>{searchMenuList[1].submenu[1]}</h6>
+                            <h6>{searchFilter[1].submenu[1]}</h6>
                             <div>
                                 <p><small>{searchDateExperience.text === '' && 'Add when you want to go'}</small></p>
                                 <p><small>{searchDateExperience.text !== '' && searchDateExperience.text}</small></p>
