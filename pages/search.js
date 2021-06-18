@@ -17,6 +17,7 @@ function SearchResult() {
     const { width, height } = useWindowDimensions();
     
     const defaultMap = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2900.020914160378!2d100.53259762223864!3d13.746398039015322!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29ecde3aee521%3A0x9f43939a2caf2963!2sSiam%20Paragon!5e0!3m2!1sen!2sth!4v1622823778517!5m2!1sen!2sth';
+    
     const [ title, setTitle ] = useState(''); 
     const [ stays, setStays ] = useState();
     const [ searchTag, setSearchTag ] = useState();
@@ -67,7 +68,7 @@ function SearchResult() {
         if (router.query.page) {
             setSearchPage(parseInt(router.query.page));
         }
-        
+
         if (router.query.location) {
             if (Object.entries(router.query).length === 4) {
                 let guest = router.query.guest.split('-');
@@ -131,7 +132,7 @@ function SearchResult() {
                     <Pagination curPage={page.curPage} totalPage={page.totalPage} changePage={onChangePage} />
                 </div>
 
-                {/* <iframe className={styles.map} src={defaultMap} width='100%' height={`${height - 80}px`} /> */}
+                <iframe className={styles.map} src={defaultMap} width='100%' height={`${height - 80}px`} />
             </div>
             
             <Footer />
