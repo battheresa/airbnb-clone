@@ -46,3 +46,7 @@ export function isBefore(date1, date2) {
 export function shuffle(list) {
     return list.sort(() => Math.random() - 0.5);;
 }
+
+export function formatNumber(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}

@@ -2,54 +2,72 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { useState, useEffect } from 'react';
+import styles from '../styles/Search.module.css';
 
 import Header from '../components/HeaderOther';
 import Footer from '../components/Footer';
+import SearchCard from '../components/utilities/SearchCard';
+import Pagination from '../components/utilities/Pagination';
 
+import { useWindowDimensions } from '../utilities/customHooks'; 
 import { getStays, getStaysByTags, getStaysByLocations, getTags } from '../utilities/services';
 
 function SearchResult() {
     const router = useRouter();
-
+    const { width, height } = useWindowDimensions();
+    
+    const defaultMap = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2900.020914160378!2d100.53259762223864!3d13.746398039015322!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29ecde3aee521%3A0x9f43939a2caf2963!2sSiam%20Paragon!5e0!3m2!1sen!2sth!4v1622823778517!5m2!1sen!2sth';
+    const [ title, setTitle ] = useState(''); 
     const [ stays, setStays ] = useState();
-    const [ loading, setLoading ] = useState();
     const [ searchTag, setSearchTag ] = useState();
     const [ searchLocation, setSearchLocation ] = useState();
     const [ searchGuest, setSearchGuest ] = useState();
+    
+    const perPage = 7;
+    const [ page, setPage ] = useState({});
+    const [ searchPage, setSearchPage ] = useState(1);
 
     // get locations based on search query
     useEffect(async () => {
+        let nStays = [];
+        let nTitle = '';
+        let nPage = {};
+
         if (searchTag) {
-            getStaysByTags(searchTag.id).then(content => {
-                setStays(content);
-                setLoading(false);
-            }); 
+            nStays = await getStaysByTags(searchTag.id);
+            nTitle = searchTag.text;
         }
         else if (searchLocation && searchGuest) {
-            getStaysByLocations(searchLocation).then(content => {
-                let totalGuest = searchGuest.adults + searchGuest.children;
-                setStays(content.filter(item => item.rooms.guest >= totalGuest));
-                setLoading(false);
-            }); 
+            let data = await getStaysByLocations(searchLocation);
+            let totalGuest = searchGuest.adults + searchGuest.children;
+
+            nStays = data.filter(item => item.rooms.guest >= totalGuest);
+            nTitle = 'Stays in ' + searchLocation;
         }
         else if (searchLocation && !searchGuest) {
-            getStaysByLocations(searchLocation).then(content => {
-                setStays(content);
-                setLoading(false);
-            }); 
+            nStays = await getStaysByLocations(searchLocation);
+            nTitle = 'Stays in ' + searchLocation;
         }
         else {
-            getStays().then(content => {
-                setStays(content);
-                setLoading(false);
-            }); 
+            nStays = await getStays();
+            nTitle = 'Nearby stays';
         }
-    }, [searchTag, searchLocation, searchGuest]);
+
+        nPage.data = nStays.slice(0, perPage);
+        nPage.totalPage = Math.ceil(nStays.length / perPage);
+        nPage.curPage = Math.min(searchPage, nPage.totalPage);
+
+        setStays(nStays);
+        setTitle(nTitle);
+        setPage(nPage);
+    }, [searchTag, searchLocation, searchGuest, searchPage]);
 
     // parse search query from url
     useEffect(() => {
-        setLoading(true);
-
+        if (router.query.page) {
+            setSearchPage(parseInt(router.query.page));
+        }
+        
         if (router.query.location) {
             if (Object.entries(router.query).length === 4) {
                 let guest = router.query.guest.split('-');
@@ -76,7 +94,20 @@ function SearchResult() {
             setSearchLocation(undefined);
             setSearchGuest(undefined);
         }
-    }, [router.query]);
+    }, [router.query.location, router.query.tag, router.query.page]);
+
+    // update data on change page
+    const onChangePage = (page) => {
+        let start = (page - 1) * perPage;
+        let end = (page * perPage) + 1;
+
+        setPage({ data: stays.slice(start, end), curPage: page, totalPage: Math.ceil(stays.length / perPage) });
+        window.scroll(0, 0);
+        
+        let index = router.asPath.indexOf('page=');
+        let path = router.asPath.slice(0, index) + 'page=' + page;
+        router.push(path);
+    };
 
     return (
         <div>
@@ -88,8 +119,21 @@ function SearchResult() {
 
             <Header />
 
-            <div style={{ height: '100vh', backgroundColor: 'var(--white)' }}></div>
+            <div className={styles.container}>
+                <div className={styles.stays}>
+                    <h5 style={{ color: 'var(--grey008)', fontWeight: '400' }}>{stays?.length} stays</h5>
+                    <h1>{title}</h1>
+                    
+                    {page.data?.map((item, i) => (
+                        <SearchCard key={i} data={item} />
+                    ))}
 
+                    <Pagination curPage={page.curPage} totalPage={page.totalPage} changePage={onChangePage} />
+                </div>
+
+                {/* <iframe className={styles.map} src={defaultMap} width='100%' height={`${height - 80}px`} /> */}
+            </div>
+            
             <Footer />
         </div>
     );

@@ -1,0 +1,29 @@
+.container {
+    display: grid;
+    grid-template-columns: 60% 40%;
+}
+
+.stays {
+    display: flex;
+    flex-direction: column;
+
+    padding: 150px 22px 30px;
+
+    min-height: 80vh;
+    background-color: var(--white);
+    border-right: 0.5px solid var(--grey004);
+}
+
+.map {
+    position: sticky;
+    top: 80px;
+    right: 0;
+
+    border: none;
+}
+
+@media (max-width: 1150px) {
+    .container {
+        grid-template-columns: 100%;
+    }
+}

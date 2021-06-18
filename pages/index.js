@@ -6,7 +6,7 @@ import styles from '../styles/Home.module.css';
 
 import Header from '../components/HeaderHome';
 import Footer from '../components/Footer';
-import Card from '../components/inline/Card';
+import Card from '../components/utilities/Card';
 
 import { getTabsLocations } from '../utilities/services';
 

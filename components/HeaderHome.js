@@ -173,10 +173,12 @@ function Header() {
                     fullPath += '&';
             });
             
+            fullPath += '&page=1';
             router.push(fullPath);
             return;
         }
 
+        path += '?page=1';
         router.push(path);
     };
 

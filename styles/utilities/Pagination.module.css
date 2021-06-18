@@ -1,0 +1,33 @@
+.container {
+    margin-top: 25px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+.container > button {
+    padding: 5px;
+    margin: 0;
+
+    width: 35px;
+    color: var(--grey007);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container > button:hover {
+    color: var(--black);
+}
+
+.container > button:disabled {
+    color: var(--grey005);
+}
+
+.thisPage > p {
+    color: var(--black);
+    font-weight: 500;
+}
