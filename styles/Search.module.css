@@ -26,4 +26,8 @@
     .container {
         grid-template-columns: 100%;
     }
+
+    .map {
+        display: none;
+    }
 }

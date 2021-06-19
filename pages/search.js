@@ -9,6 +9,7 @@ import Footer from '../components/Footer';
 import SearchCard from '../components/utilities/SearchCard';
 import Pagination from '../components/utilities/Pagination';
 
+import { shuffle } from '../utilities/customService';
 import { useWindowDimensions } from '../utilities/customHooks'; 
 import { getStays, getStaysByTags, getStaysByLocations, getTags } from '../utilities/services';
 
@@ -19,20 +20,19 @@ function SearchResult() {
     const defaultMap = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2900.020914160378!2d100.53259762223864!3d13.746398039015322!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29ecde3aee521%3A0x9f43939a2caf2963!2sSiam%20Paragon!5e0!3m2!1sen!2sth!4v1622823778517!5m2!1sen!2sth';
     
     const [ title, setTitle ] = useState(''); 
-    const [ stays, setStays ] = useState();
+    const [ stays, setStays ] = useState([]);
     const [ searchTag, setSearchTag ] = useState();
     const [ searchLocation, setSearchLocation ] = useState();
     const [ searchGuest, setSearchGuest ] = useState();
     
-    const perPage = 7;
+    const perPage = 7;  // total = 20 -> 0-8 (7), 8-15 (7), 15-20 (6)
     const [ page, setPage ] = useState({});
-    const [ searchPage, setSearchPage ] = useState(1);
+    const [ searchPage, setSearchPage ] = useState(0);
 
     // get locations based on search query
     useEffect(async () => {
         let nStays = [];
         let nTitle = '';
-        let nPage = {};
 
         if (searchTag) {
             nStays = await getStaysByTags(searchTag.id);
@@ -54,13 +54,13 @@ function SearchResult() {
             nTitle = 'Nearby stays';
         }
 
-        nPage.data = nStays.slice(0, perPage);
-        nPage.totalPage = Math.ceil(nStays.length / perPage);
-        nPage.curPage = Math.min(searchPage, nPage.totalPage);
-
+        nStays.forEach(item => {
+            item.gallery = shuffle(item.gallery);
+        });
+        
         setStays(nStays);
         setTitle(nTitle);
-        setPage(nPage);
+        onChangePage(Math.max(searchPage, 1), nStays);
     }, [searchTag, searchLocation, searchGuest, searchPage]);
 
     // parse search query from url
@@ -69,25 +69,25 @@ function SearchResult() {
             setSearchPage(parseInt(router.query.page));
         }
 
+        if (router.query.guest) {
+            let guest = router.query.guest.split('-');
+            let guestText = `${parseInt(guest[0]) + parseInt(guest[1])} guest${parseInt(guest[0]) + parseInt(guest[1]) <= 1 ? '' : 's'}`;
+
+            if (parseInt(guest[2]) > 0)
+                guestText += `, ${parseInt(guest[2])} infant${parseInt(guest[2]) === 1 ? '' : 's'}`;
+
+            if (parseInt(guest[0]) + parseInt(guest[1]) + parseInt(guest[2]) === 0)
+                guestText = '';
+
+            setSearchGuest({ total: guestText, adults: parseInt(guest[0]), children: parseInt(guest[1]), infants: parseInt(guest[2]) });
+        }
+
         if (router.query.location) {
-            if (Object.entries(router.query).length === 4) {
-                let guest = router.query.guest.split('-');
-                let guestText = `${parseInt(guest[0]) + parseInt(guest[1])} guest${parseInt(guest[0]) + parseInt(guest[1]) <= 1 ? '' : 's'}`;
-
-                if (parseInt(guest[2]) > 0)
-                    guestText += `, ${parseInt(guest[2])} infant${parseInt(guest[2]) === 1 ? '' : 's'}`;
-
-                if (parseInt(guest[0]) + parseInt(guest[1]) + parseInt(guest[2]) === 0)
-                    guestText = '';
-
-                setSearchGuest({ total: guestText, adults: parseInt(guest[0]), children: parseInt(guest[1]), infants: parseInt(guest[2]) });
-            }
-
-            setSearchLocation(router.query.location.replace('-', ', '));
+            setSearchLocation(router.query.location.replaceAll('-', ', '));
         }
         else if (router.query.tag) {
             getTags().then(content => {
-                setSearchTag(content.find(item => item.text.toLowerCase() === router.query.tag.replace('-', ' ').toLowerCase()));
+                setSearchTag(content.find(item => item.text.toLowerCase() === router.query.tag.replaceAll('-', ' ').toLowerCase()));
             });
         }
         else {
@@ -95,14 +95,16 @@ function SearchResult() {
             setSearchLocation(undefined);
             setSearchGuest(undefined);
         }
-    }, [router.query.location, router.query.tag, router.query.page]);
+    }, [router.query.location, router.query.tag]);
 
     // update data on change page
-    const onChangePage = (page) => {
-        let start = (page - 1) * perPage;
-        let end = (page * perPage) + 1;
+    const onChangePage = (page, data) => {
+        let content = data ? data : stays;
 
-        setPage({ data: stays.slice(start, end), curPage: page, totalPage: Math.ceil(stays.length / perPage) });
+        let start = (page - 1) * perPage;
+        let end = Math.min((page * perPage), content.length);
+
+        setPage({ data: content.slice(start, end), curPage: page, totalPage: Math.ceil(content.length / perPage) });
         window.scroll(0, 0);
         
         let index = router.asPath.indexOf('page=');

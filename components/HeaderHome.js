@@ -159,7 +159,7 @@ function Header() {
                 console.log(item);
 
                 if (typeof item[1] === 'string')
-                    fullPath += item[1].replace(' ', '').replace(',', '-');
+                    fullPath += item[1].replaceAll(' ', '').replaceAll(',', '-');
 
                 if (typeof item[1] === 'object') {
                     if (item[1].date !== undefined)

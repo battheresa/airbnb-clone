@@ -8,16 +8,18 @@ import Header from '../components/HeaderHome';
 import Footer from '../components/Footer';
 import Card from '../components/utilities/Card';
 
-import { getTabsLocations } from '../utilities/services';
+import { getTags, getTabsLocations } from '../utilities/services';
 
 function Home() {
     const router = useRouter();
+    const [ tags, setTags ] = useState([]);
     const [ tabs, setTabs ] = useState([]);
     const [ currentTab, setCurrentTab ] = useState(0);
 
-    // get tabs from db
+    // get tags and tabs from db
     useEffect(() => {
         getTabsLocations().then(content => setTabs(content));
+        getTags().then(content => setTags(content));
     }, []);
 
     // change routes
@@ -44,17 +46,17 @@ function Home() {
                     <div className={styles.bannerText}>
                         <h1 className={styles.bannerTitle}>The Greatest Outdoors</h1>
                         <p className={styles.bannerSubtitle}>Wishlists curated by Airbnb.</p>
-                        <button className={styles.bannerButton} onClick={(e) => changeRoute(e, '/search')}>Get inspired</button>
+                        <button className={styles.bannerButton} onClick={(e) => changeRoute(e, '/search?page=1')}>Get inspired</button>
                     </div>
                 </div>
 
                 <div className={styles.section}>
                     <h2>Live anywhere</h2>
                     <div className={styles.cardHolder}>
-                        <Card image='https://a0.muscache.com/im/pictures/a0316ecb-e49b-4b3a-b6b6-c2876b820e8c.jpg?im_w=720' title='Entire homes' body='' />
-                        <Card image='https://a0.muscache.com/im/pictures/ff69ac49-64e7-4f4a-ae2b-ee01163d0790.jpg?im_w=720' title='Cabins and cottages' body='' />
-                        <Card image='https://a0.muscache.com/im/pictures/ce6814ba-ed53-4d6e-b8f8-c0bbcf821011.jpg?im_w=720' title='Unique stays' body='' />
-                        <Card image='https://a0.muscache.com/im/pictures/fbe849a4-841a-41b3-b770-419402a6316f.jpg?im_w=720' title='Pets welcome' body='' />
+                        <Card image='https://a0.muscache.com/im/pictures/a0316ecb-e49b-4b3a-b6b6-c2876b820e8c.jpg?im_w=720' title={tags[0]?.text} body='' />
+                        <Card image='https://a0.muscache.com/im/pictures/ff69ac49-64e7-4f4a-ae2b-ee01163d0790.jpg?im_w=720' title={tags[1]?.text} body='' />
+                        <Card image='https://a0.muscache.com/im/pictures/ce6814ba-ed53-4d6e-b8f8-c0bbcf821011.jpg?im_w=720' title={tags[2]?.text} body='' />
+                        <Card image='https://a0.muscache.com/im/pictures/fbe849a4-841a-41b3-b770-419402a6316f.jpg?im_w=720' title={tags[3]?.text} body='' />
                     </div>
                 </div>
 

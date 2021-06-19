@@ -97,21 +97,50 @@ function Header() {
             
             let to = router.query.checkout.split('-');
             let dateTo = formatDate(new Date(parseInt(to[0]), parseInt(to[1]), parseInt(to[2])));
-
-            let buttonText = { location: router.query.location.replace('-', ', ') };
             
-            if (Object.entries(router.query).length === 3) {
-                let dateText = dateFrom.monthText + ' ' + dateFrom.date;
-                dateText += dateFrom.month === dateTo.month ? ' - ' : ' - ' + dateTo.monthText.slice(0, 3) + ' ';
-                dateText += dateTo.date;
-
-                buttonText.date = dateText;
-
-                setSearchMenu(1);
-                setSearchDateExperience({ from: dateFrom, to: dateTo, text: dateText });
+            let location = router.query.location.replaceAll('-', ', ');
+            for (let i = location.length - 1; i >= 0; i--) {
+                if (location[i] === location[i].toUpperCase()) {
+                    location = location.substring(0, i) + ' ' + location.substring(i);
+                }
             }
 
-            if (Object.entries(router.query).length === 4) {
+            let buttonText = { location: location, date: '', guest: '' };
+            
+            if (router.query.checkin && router.query.checkout) {
+                if (Object.entries(router.query).length === 4) {
+                    let dateText = dateFrom.monthText + ' ' + dateFrom.date;
+                    dateText += dateFrom.month === dateTo.month ? ' - ' : ' - ' + dateTo.monthText.slice(0, 3) + ' ';
+                    dateText += dateTo.date;
+
+                    buttonText.date = dateText;
+
+                    setSearchMenu(1);
+                    setSearchDateExperience({ from: dateFrom, to: dateTo, text: dateText });
+                }
+
+                if (Object.entries(router.query).length === 5) {
+                    buttonText.date = dateFrom.monthText.slice(0, 3) + ' ' + dateFrom.date + ' - ' + (dateFrom.month === dateTo.month ? dateTo.date : dateTo.monthText.slice(0, 3) + ' ' + dateTo.date);
+
+                    setSearchMenu(0);
+                    setSearchDateStay({ from: dateFrom, fromText: dateFrom.monthText.slice(0, 3) + ' ' + dateFrom.date, to: dateTo, toText: dateTo.monthText.slice(0, 3) + ' ' + dateTo.date });
+                }
+            } 
+            else {
+                buttonText.date = '';
+
+                if (Object.entries(router.query).length === 4) {
+                    setSearchMenu(1);
+                    setSearchDateExperience({ from: dateFrom, to: dateTo, text: '' });
+                }
+
+                if (Object.entries(router.query).length === 5) {
+                    setSearchMenu(0);
+                    setSearchDateStay({ from: dateFrom, fromText: '', to: dateTo, toText: '' });
+                }
+            }
+
+            if (router.query.quest) {
                 let guest = router.query.guest.split('-');
                 let guestText = `${parseInt(guest[0]) + parseInt(guest[1])} guest${parseInt(guest[0]) + parseInt(guest[1]) <= 1 ? '' : 's'}`;
 
@@ -121,16 +150,12 @@ function Header() {
                 if (parseInt(guest[0]) + parseInt(guest[1]) + parseInt(guest[2]) === 0)
                     guestText = '';
 
-                buttonText.date = dateFrom.monthText.slice(0, 3) + ' ' + dateFrom.date + ' - ' + (dateFrom.month === dateTo.month ? dateTo.date : dateTo.monthText.slice(0, 3) + ' ' + dateTo.date);
                 buttonText.guest = guestText.split(',')[0];
-
-                setSearchMenu(0);
-                setSearchDateStay({ from: dateFrom, fromText: dateFrom.monthText.slice(0, 3) + ' ' + dateFrom.date, to: dateTo, toText: dateTo.monthText.slice(0, 3) + ' ' + dateTo.date });
                 setSearchGuest({ total: guestText, adults: parseInt(guest[0]), children: parseInt(guest[1]), infants: parseInt(guest[2]) });
             }
 
             setSearchButtonText(buttonText);
-            setSearchLocation(router.query.location.replace('-', ', '));
+            setSearchLocation(router.query.location.replaceAll('-', ', '));
         }
     }, [router.query]);
 
@@ -185,7 +210,7 @@ function Header() {
                 console.log(item);
 
                 if (typeof item[1] === 'string')
-                    fullPath += item[1].replace(' ', '').replace(',', '-');
+                    fullPath += item[1].replaceAll(' ', '').replaceAll(',', '-');
 
                 if (typeof item[1] === 'object') {
                     if (item[1].date !== undefined)
@@ -369,8 +394,10 @@ function Header() {
                     {/* search filters */}
                     {typeof searchButtonText === 'object' && <h5 className={styles.searchText} style={{ width: 'fit-content', marginRight: '20px' }}>
                         <span>{searchButtonText?.location?.split(',')[0]}</span>
-                        <span>{searchButtonText?.date}</span>
-                        {searchButtonText?.guest && <span>{searchButtonText?.guest}</span>}
+                        <span>{searchButtonText?.date !== '' ? searchButtonText?.date : <span style={{ color: 'var(--grey006)'}}>Add dates</span>}</span>
+                        {searchMenu === 0 && <span>
+                            {searchButtonText?.guest !== '' ? searchButtonText?.guest : <span style={{ color: 'var(--grey006)'}}>Add guest</span>}
+                        </span>}
                     </h5>}
 
                     {/* default text */}

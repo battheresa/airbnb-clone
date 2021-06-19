@@ -1,10 +1,9 @@
 import styles from '../../styles/utilities/SearchCard.module.css';
 import StarRateRoundedIcon from '@material-ui/icons/StarRateRounded';
-import { shuffle, formatNumber } from '../../utilities/customService';
+import { formatNumber } from '../../utilities/customService';
 
 function SearchCard({ data }) {
-    const { title, intro, rooms, rating, price, currency } = data;
-    const gallery = shuffle(data.gallery);
+    const { title, intro, gallery, rooms, rating, price, currency } = data;
     const unit = currency === 'THB' ? '฿' : '$';
 
     return (
