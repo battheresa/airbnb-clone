@@ -484,7 +484,7 @@ function Header() {
             <div className={styles.background} style={backgroundStyle} />
 
             {/* screen cover */}
-            <div id='screenCover' className='screenCover' style={{ display: openSearch || searchSubmenu !== -1 ? 'block' : 'none' }} mode={offsetY < benchmarkOffsetY ? 'transparent' : ''} onClick={() => onClickScreenCover()} />
+            <div id='screenCover' className='screenCover' style={{ display: openSearch || searchSubmenu !== -1 ? 'block' : 'none' }} mode={openSearch || offsetY < benchmarkOffsetY ? '' : 'transparent'} onClick={() => onClickScreenCover()} />
         </div>
     );
 }

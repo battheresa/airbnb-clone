@@ -128,7 +128,7 @@ function SearchResult() {
                     <h1>{title}</h1>
                     
                     {page.data?.map((item, i) => (
-                        <SearchCard key={i} data={item} />
+                        <SearchCard key={i} content={item} />
                     ))}
 
                     <Pagination curPage={page.curPage} totalPage={page.totalPage} changePage={onChangePage} />
@@ -136,7 +136,7 @@ function SearchResult() {
 
                 <iframe className={styles.map} src={defaultMap} width='100%' height={`${height - 80}px`} />
             </div>
-            
+                        
             <Footer />
         </div>
     );

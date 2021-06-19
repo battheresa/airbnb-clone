@@ -1,15 +1,20 @@
+import { useState } from 'react';
 import styles from '../../styles/utilities/SearchCard.module.css';
+
+import Carousel from './Carousel';
+
 import StarRateRoundedIcon from '@material-ui/icons/StarRateRounded';
+
 import { formatNumber } from '../../utilities/customService';
 
-function SearchCard({ data }) {
-    const { title, intro, gallery, rooms, rating, price, currency } = data;
+function SearchCard({ content }) {
+    const { title, intro, gallery, rooms, rating, price, currency } = content;
     const unit = currency === 'THB' ? '฿' : '$';
 
     return (
         <div className={styles.container}>
             <div className={styles.image}>
-                <img src={gallery[0]} alt={title} />
+                <Carousel content={gallery} />
             </div>
 
             <div className={styles.detail}>
