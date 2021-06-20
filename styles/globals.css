@@ -144,3 +144,7 @@ div::-webkit-scrollbar {
 .screenCover[mode=transparent] {
     background-color: var(--transparent);
 }
+
+.screenCover[cover=all] {
+    z-index: 2;
+}

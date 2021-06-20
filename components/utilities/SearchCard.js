@@ -7,7 +7,7 @@ import StarRateRoundedIcon from '@material-ui/icons/StarRateRounded';
 
 import { formatNumber } from '../../utilities/customService';
 
-function SearchCard({ content }) {
+function SearchCard({ content, setSelected }) {
     const { title, intro, gallery, rooms, rating, price, currency } = content;
     const unit = currency === 'THB' ? '฿' : '$';
 
@@ -20,7 +20,7 @@ function SearchCard({ content }) {
             <div className={styles.detail}>
                 <div className={styles.header}>
                     <p><small>{intro}</small></p>
-                    <h4><big>{title}</big></h4>
+                    <h4 onClick={() => setSelected(gallery)}><big>{title}</big></h4>
 
                     <div className={styles.structure}>
                         <p><small>{rooms.guest} guest{rooms.guest > 1 ? 's' : ''}</small></p>

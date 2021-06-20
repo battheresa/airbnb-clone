@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useState, useEffect, useRef } from 'react';
 
 import styles from '../styles/Header.module.css';
-import { config, animated, useChain, useSpring, useSpringRef } from "@react-spring/web";
+import { config, animated, useChain, useSpring, useSpringRef } from '@react-spring/web';
 
 import MenuList from './modal/MenuList';
 import DateInput from './modal/DateInput';
@@ -394,9 +394,9 @@ function Header() {
                     {/* search filters */}
                     {typeof searchButtonText === 'object' && <h5 className={styles.searchText} style={{ width: 'fit-content', marginRight: '20px' }}>
                         <span>{searchButtonText?.location?.split(',')[0]}</span>
-                        <span>{searchButtonText?.date !== '' ? searchButtonText?.date : <span style={{ color: 'var(--grey006)'}}>Add dates</span>}</span>
+                        <span>{searchButtonText?.date !== '' ? searchButtonText?.date : <span style={{ color: 'var(--grey006)', fontWeight: '300' }}>Add dates</span>}</span>
                         {searchMenu === 0 && <span>
-                            {searchButtonText?.guest !== '' ? searchButtonText?.guest : <span style={{ color: 'var(--grey006)'}}>Add guest</span>}
+                            {searchButtonText?.guest !== '' ? searchButtonText?.guest : <span style={{ color: 'var(--grey006)', fontWeight: '300'}}>Add guest</span>}
                         </span>}
                     </h5>}
 
@@ -484,7 +484,7 @@ function Header() {
             <div className={styles.background} style={backgroundStyle} />
 
             {/* screen cover */}
-            <div id='screenCover' className='screenCover' style={{ display: openSearch || searchSubmenu !== -1 ? 'block' : 'none' }} mode={openSearch || offsetY < benchmarkOffsetY ? '' : 'transparent'} onClick={() => onClickScreenCover()} />
+            <div id='screenCover' className='screenCover' style={{ display: openSearch || searchSubmenu !== -1 ? 'block' : 'none' }} onClick={() => onClickScreenCover()} />
         </div>
     );
 }

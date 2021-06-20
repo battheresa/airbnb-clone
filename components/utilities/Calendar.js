@@ -102,12 +102,10 @@ function Calendar({ rows, from, to, date, setDate }) {
             <h4>{date.monthText} {date.year}</h4>
             
             <div id='calendar' className={styles.days}>
-                {/* days of the week */}
                 {weekdays.map(item => (
                     <h6 key={item}>{item.slice(0, 2)}</h6>
                 ))}
                 
-                {/* calendar content */}
                 {calendar.map(item => (
                     <div id={item.id} key={item.index} status={typeof item.status === 'string' ? item.status : getStatus(item.status)} onClick={() => onSelectDate(item)}>
                         <p><small>{item.date !== 0 && item.date}</small></p>

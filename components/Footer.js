@@ -27,7 +27,7 @@ function Footer() {
             <div className={styles.information}>
                 {/* copy rights */}
                 <div className={styles.credit} name='before'>
-                    <p>&copy; 2021 Airbnb Clone Project.</p>
+                    <p>&copy; 2021 All rights reserved. Airbnb Clone Project.</p>
                 </div>
 
                 {/* language and currency */}
@@ -52,7 +52,7 @@ function Footer() {
 
                 {/* copy rights */}
                 <div className={styles.credit} name='after'>
-                    <p>&copy; 2021 Airbnb Clone Project.</p>
+                    <p>&copy; 2021 All rights reserved. Airbnb Clone Project.</p>
                 </div>
             </div>
         </div>

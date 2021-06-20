@@ -42,6 +42,7 @@
 
 .header > h4 {
     font-weight: 300;
+    cursor: pointer;
 }
 
 .header > p {

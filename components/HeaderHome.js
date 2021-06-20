@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useState, useEffect, useRef } from 'react';
 
 import styles from '../styles/Header.module.css';
-import { config, animated, useChain, useSpring, useSpringRef } from "@react-spring/web";
+import { config, animated, useChain, useSpring, useSpringRef } from '@react-spring/web';
 
 import MenuList from './modal/MenuList';
 import DateInput from './modal/DateInput';

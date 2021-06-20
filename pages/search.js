@@ -8,6 +8,7 @@ import Header from '../components/HeaderOther';
 import Footer from '../components/Footer';
 import SearchCard from '../components/utilities/SearchCard';
 import Pagination from '../components/utilities/Pagination';
+import Gallery from '../components/modal/Gallery';
 
 import { shuffle } from '../utilities/customService';
 import { useWindowDimensions } from '../utilities/customHooks'; 
@@ -25,9 +26,12 @@ function SearchResult() {
     const [ searchLocation, setSearchLocation ] = useState();
     const [ searchGuest, setSearchGuest ] = useState();
     
-    const perPage = 7;  // total = 20 -> 0-8 (7), 8-15 (7), 15-20 (6)
+    const perPage = 7;
     const [ page, setPage ] = useState({});
     const [ searchPage, setSearchPage ] = useState(0);
+
+    const [ selected, setSelected ] = useState([]);
+    const [ openGallery, setOpenGallery ] = useState(false);
 
     // get locations based on search query
     useEffect(async () => {
@@ -112,6 +116,18 @@ function SearchResult() {
         router.push(path);
     };
 
+    // set data for gallery modal
+    const onChangeSelected = (data) => {
+        setSelected(data);
+        setOpenGallery(true);
+    };
+
+    // close gallery
+    const onCloseGallery = async () => {
+        setSelected([]);
+        setOpenGallery(false);
+    };
+
     return (
         <div>
             <Head>
@@ -128,7 +144,7 @@ function SearchResult() {
                     <h1>{title}</h1>
                     
                     {page.data?.map((item, i) => (
-                        <SearchCard key={i} content={item} />
+                        <SearchCard key={i} content={item} setSelected={onChangeSelected} />
                     ))}
 
                     <Pagination curPage={page.curPage} totalPage={page.totalPage} changePage={onChangePage} />
@@ -136,7 +152,9 @@ function SearchResult() {
 
                 <iframe className={styles.map} src={defaultMap} width='100%' height={`${height - 80}px`} />
             </div>
-                        
+
+            <Gallery content={selected} open={openGallery} onClose={onCloseGallery} />
+
             <Footer />
         </div>
     );
