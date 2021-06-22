@@ -200,9 +200,10 @@ function Header() {
     // redirect page
     const changeRoute = (event, path, params) => {
         event.preventDefault();
+        setOpenSearch(false);
 
         if (params) {
-            let fullPath = path + '?';
+            let fullPath = path + '?menu=' + searchMenu + '&';
 
             Object.entries(params).forEach(item => {
                 fullPath += item[0] + '=';
@@ -229,7 +230,7 @@ function Header() {
             return;
         }
 
-        path += '?page=1';
+        path += '?menu=' + searchMenu + '&page=1';
         router.push(path);
     };
 
@@ -445,9 +446,9 @@ function Header() {
                         </div>
                         <DateInput open={searchSubmenu === 1 || searchSubmenu === 2} mode={true} submenu={searchSubmenu} date={searchDateStay} setDate={onEnterSearchDateStay} />
 
-                        <div className={styles.searchFieldMenu} style={getSubmenuStyle(0, 3)} onClick={() => onClickSubmenu(3)} onMouseEnter={() => onMouseEnterSubmenu(3)} onMouseLeave={() => onMouseLeaveSubmenu(3)} ref={submenuList[3]}>
-                            <h6>{searchFilter[0].submenu[3]}</h6>
-                            <div>
+                        <div className={styles.searchFieldMenu} style={getSubmenuStyle(0, 3)} onMouseEnter={() => onMouseEnterSubmenu(3)} onMouseLeave={() => onMouseLeaveSubmenu(3)} ref={submenuList[3]}>
+                            <h6 onClick={() => onClickSubmenu(3)}>{searchFilter[0].submenu[3]}</h6>
+                            <div onClick={() => onClickSubmenu(3)}>
                                 <p><small>{searchGuest.total === '' && 'Add guests'}</small></p>
                                 <p><small>{searchGuest.total !== '' && searchGuest.total}</small></p>
                             </div>
@@ -456,9 +457,9 @@ function Header() {
                         <GuestInput open={searchSubmenu === 3} guest={searchGuest} setGuest={onEnterSearchGuest}/>
 
                         {/* second submenu group */}
-                        <div className={styles.searchFieldMenu} style={getSubmenuStyle(1, 1)} onClick={() => onClickSubmenu(4)} onMouseEnter={() => onMouseEnterSubmenu(4)} onMouseLeave={() => onMouseLeaveSubmenu(4)} ref={submenuList[4]}>
-                            <h6>{searchFilter[1].submenu[1]}</h6>
-                            <div>
+                        <div className={styles.searchFieldMenu} style={getSubmenuStyle(1, 1)} onMouseEnter={() => onMouseEnterSubmenu(4)} onMouseLeave={() => onMouseLeaveSubmenu(4)} ref={submenuList[4]}>
+                            <h6 onClick={() => onClickSubmenu(4)}>{searchFilter[1].submenu[1]}</h6>
+                            <div onClick={() => onClickSubmenu(4)}>
                                 <p><small>{searchDateExperience.text === '' && 'Add when you want to go'}</small></p>
                                 <p><small>{searchDateExperience.text !== '' && searchDateExperience.text}</small></p>
                             </div>

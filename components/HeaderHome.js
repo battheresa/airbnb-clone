@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-
 import { useState, useEffect, useRef } from 'react';
 
 import styles from '../styles/Header.module.css';
@@ -151,7 +150,7 @@ function Header() {
         event.preventDefault();
 
         if (params) {
-            let fullPath = path + '?';
+            let fullPath = path + '?menu=' + searchMenu + '&';
 
             Object.entries(params).forEach(item => {
                 fullPath += item[0] + '=';
@@ -178,7 +177,7 @@ function Header() {
             return;
         }
 
-        path += '?page=1';
+        path += '?menu=' + searchMenu + '&page=1';
         router.push(path);
     };
 

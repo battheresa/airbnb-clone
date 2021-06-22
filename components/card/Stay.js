@@ -1,13 +1,10 @@
-import { useState } from 'react';
-import styles from '../../styles/utilities/SearchCard.module.css';
-
-import Carousel from './Carousel';
-
+import styles from '../../styles/card/Stay.module.css';
 import StarRateRoundedIcon from '@material-ui/icons/StarRateRounded';
 
+import Carousel from '../utilities/Carousel';
 import { formatNumber } from '../../utilities/customService';
 
-function SearchCard({ content, setSelected }) {
+function Stay({ content, setSelected }) {
     const { title, intro, gallery, rooms, rating, price, currency } = content;
     const unit = currency === 'THB' ? '฿' : '$';
 
@@ -44,4 +41,4 @@ function SearchCard({ content, setSelected }) {
     );
 }
 
-export default SearchCard;
+export default Stay;

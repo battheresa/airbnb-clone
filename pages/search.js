@@ -6,7 +6,7 @@ import styles from '../styles/Search.module.css';
 
 import Header from '../components/HeaderOther';
 import Footer from '../components/Footer';
-import SearchCard from '../components/utilities/SearchCard';
+import CardStay from '../components/card/Stay';
 import Pagination from '../components/utilities/Pagination';
 import Gallery from '../components/modal/Gallery';
 
@@ -14,7 +14,7 @@ import { shuffle } from '../utilities/customService';
 import { useWindowDimensions } from '../utilities/customHooks'; 
 import { getStays, getStaysByTags, getStaysByLocations, getTags } from '../utilities/services';
 
-function SearchResult() {
+function Search() {
     const router = useRouter();
     const { width, height } = useWindowDimensions();
     
@@ -22,6 +22,9 @@ function SearchResult() {
     
     const [ title, setTitle ] = useState(''); 
     const [ stays, setStays ] = useState([]);
+    const [ experiences, setExperiences ] = useState([]);
+
+    const [ searchMenu, setSearchMenu ] = useState(0);
     const [ searchTag, setSearchTag ] = useState();
     const [ searchLocation, setSearchLocation ] = useState();
     const [ searchGuest, setSearchGuest ] = useState();
@@ -36,6 +39,7 @@ function SearchResult() {
     // get locations based on search query
     useEffect(async () => {
         let nStays = [];
+        let nExperiences = [];
         let nTitle = '';
 
         if (searchTag) {
@@ -51,11 +55,17 @@ function SearchResult() {
         }
         else if (searchLocation && !searchGuest) {
             nStays = await getStaysByLocations(searchLocation);
-            nTitle = 'Stays in ' + searchLocation;
+            nTitle = 'Experiences in ' + searchLocation;
         }
         else {
-            nStays = await getStays();
-            nTitle = 'Nearby stays';
+            if (searchMenu === 0) {
+                nStays = await getStays();
+                nTitle = 'Nearby stays';
+            }
+            else {
+                nExperiences = await getStays();
+                nTitle = 'Experiences near you';
+            }
         }
 
         nStays.forEach(item => {
@@ -63,9 +73,18 @@ function SearchResult() {
         });
         
         setStays(nStays);
+        setExperiences(nExperiences);
+
         setTitle(nTitle);
         onChangePage(Math.max(searchPage, 1), nStays);
-    }, [searchTag, searchLocation, searchGuest, searchPage]);
+    }, [searchTag, searchLocation, searchGuest, searchPage, searchMenu]);
+
+    // get search menu
+    useEffect(() => {
+        if (router.query.menu) {
+            setSearchMenu(parseInt(router.query.menu));
+        }
+    }, [router.query.menu]);
 
     // parse search query from url
     useEffect(() => {
@@ -138,20 +157,37 @@ function SearchResult() {
 
             <Header />
 
-            <div className={styles.container}>
+            {searchMenu === 0 && <div className={styles.container} menu='stay'>
                 <div className={styles.stays}>
                     <h5 style={{ color: 'var(--grey008)', fontWeight: '400' }}>{stays?.length} stays</h5>
                     <h1>{title}</h1>
                     
                     {page.data?.map((item, i) => (
-                        <SearchCard key={i} content={item} setSelected={onChangeSelected} />
+                        <CardStay key={i} content={item} setSelected={onChangeSelected} />
                     ))}
 
                     <Pagination curPage={page.curPage} totalPage={page.totalPage} changePage={onChangePage} />
                 </div>
 
                 <iframe className={styles.map} src={defaultMap} width='100%' height={`${height - 80}px`} />
-            </div>
+            </div>}
+
+            {searchMenu === 1 && <div className={styles.container} menu='experience'>
+                <h5 style={{ color: 'var(--grey008)', fontWeight: '400' }}>{experiences?.length} experiences</h5>
+                <h1>{title}</h1>
+
+                <div className={styles.experiences}>
+                    <h3 style={{ fontWeight: 500 }}><big>All Experiences</big></h3>
+
+                    <div>
+                        {experiences.map((item, i) => (
+                            <div>{item.title}</div>
+                        ))}
+                    </div>
+                </div>
+
+                <button>Learn more</button>
+            </div>}
 
             <Gallery content={selected} open={openGallery} onClose={onCloseGallery} />
 
@@ -160,4 +196,4 @@ function SearchResult() {
     );
 }
 
-export default SearchResult;
+export default Search;

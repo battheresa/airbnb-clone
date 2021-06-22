@@ -6,7 +6,7 @@ import styles from '../styles/Home.module.css';
 
 import Header from '../components/HeaderHome';
 import Footer from '../components/Footer';
-import Card from '../components/utilities/Card';
+import Card from '../components/card/Home';
 
 import { getTags, getTabsLocations } from '../utilities/services';
 
@@ -46,7 +46,7 @@ function Home() {
                     <div className={styles.bannerText}>
                         <h1 className={styles.bannerTitle}>The Greatest Outdoors</h1>
                         <p className={styles.bannerSubtitle}>Wishlists curated by Airbnb.</p>
-                        <button className={styles.bannerButton} onClick={(e) => changeRoute(e, '/search?page=1')}>Get inspired</button>
+                        <button className={styles.bannerButton} onClick={(e) => changeRoute(e, '/search?menu=0&page=1')}>Get inspired</button>
                     </div>
                 </div>
 
