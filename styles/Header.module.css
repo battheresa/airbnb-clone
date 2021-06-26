@@ -21,6 +21,10 @@
     padding: 18px 22px;
 }
 
+.container[mode=experience] {
+    padding: 18px 80px;
+}
+
 .background {
     position: absolute;
     left: 0;
@@ -285,8 +289,14 @@
     }
 }
 
+@media (max-width: 1150px) {
+    .container[mode=experience] {
+        padding: 18px 25px;
+    }
+}
+
 @media (max-width: 980px) {
-    .container {
+    .container[version=home] {
         padding: 18px 40px;
     }
 }

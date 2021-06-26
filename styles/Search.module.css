@@ -1,4 +1,4 @@
-.container[menu=stay] {
+.containerStay {
     display: grid;
     grid-template-columns: 60% 40%;
 }
@@ -22,21 +22,21 @@
     border: none;
 }
 
-.container[menu=experience] {
+.containerExperience {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
 
-    padding: 150px 80px 30px;
+    padding: 150px 80px 50px;
     min-height: 80vh;
 }
 
-.container[menu=experience] > h1, .container[menu=experience] > h3, .container[menu=experience] > h5 {
+.containerExperience > h1, .containerExperience > h3, .containerExperience > h5 {
     width: 100%;
 }
 
-.container[menu=experience] > button {
+.containerExperience > button {
     padding: 8px 25px;
     border-radius: 8px;
     width: fit-content;
@@ -46,7 +46,7 @@
     background-color: var(--black);
 }
 
-.container[menu=experience] > button:hover {
+.containerExperience > button:hover {
     opacity: 1;
 }
 
@@ -63,12 +63,28 @@
     width: 100%;
 }
 
+@media (max-width: 1300px) {
+    .experiences > div {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
 @media (max-width: 1150px) {
-    .container[menu=stay] {
+    .containerStay {
         grid-template-columns: 100%;
     }
 
     .map {
         display: none;
+    }
+
+    .containerExperience {
+        padding: 150px 25px 50px;
+    }
+}
+
+@media (max-width: 740px) {
+    .experiences > div {
+        grid-template-columns: repeat(2, 1fr);
     }
 }

@@ -158,7 +158,7 @@ function Search() {
 
             <Header />
 
-            {searchMenu === 0 && <div className={styles.container} menu='stay'>
+            {searchMenu === 0 && <div className={styles.containerStay}>
                 <div className={styles.stays}>
                     <h5 style={{ color: 'var(--grey008)', fontWeight: '400' }}>{stays?.length} stays</h5>
                     <h1>{title}</h1>
@@ -173,7 +173,7 @@ function Search() {
                 <iframe className={styles.map} src={defaultMap} width='100%' height={`${height - 80}px`} />
             </div>}
 
-            {searchMenu === 1 && <div className={styles.container} menu='experience'>
+            {searchMenu === 1 && <div className={styles.containerExperience}>
                 <h5 style={{ color: 'var(--grey008)', fontWeight: '400' }}>{experiences?.length} experiences</h5>
                 <h1>{title}</h1>
 

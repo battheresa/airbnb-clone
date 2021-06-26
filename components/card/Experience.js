@@ -14,6 +14,7 @@ function Experience({ content, setSelected }) {
 
     const [ slide, setSlide ] = useState(0);
     const [ size, setSize ] = useState(100);
+    const [ offset, setOffset ] = useState(0);
     const [ transition, setTransition ] = useState(0);
 
     // change slide and reset animation
@@ -22,6 +23,7 @@ function Experience({ content, setSelected }) {
             const interval = setInterval(() => {
                 setSlide(slide + 1 >= gallery.length ? 0 : slide + 1);
                 setSize(100);
+                setOffset(0);
                 setTransition(0);
                 setReset(true);
             }, 3000);
@@ -35,6 +37,7 @@ function Experience({ content, setSelected }) {
         if (play && reset) {
             const interval = setInterval(() => {
                 setSize(110);
+                setOffset(5);
                 setTransition(3);
                 setReset(false);
             }, 100);
@@ -48,11 +51,13 @@ function Experience({ content, setSelected }) {
         if (play) {
             setSlide(slide + 1);
             setSize(110);
+            setOffset(5);
             setTransition(3);
         }
         else {
             setSlide(0);
             setSize(100);
+            setOffset(0);
             setTransition(0);
         }
     }, [play]);
@@ -60,7 +65,7 @@ function Experience({ content, setSelected }) {
     return (
         <div className={styles.container} onClick={() => setSelected(gallery)} onMouseEnter={() => setPlay(true)} onMouseLeave={() => setPlay(false)}>
             <div className={styles.image}>
-                <img src={gallery[slide]} style={{ width: `${size}%`, height: `${size}%`, transition: `${transition}s` }} />
+                <img src={gallery[slide]} style={{ marginTop: `-${offset}%`, marginLeft: `-${offset}%`,  width: `${size}%`, height: `${size}%`, transition: `${transition}s` }} />
             </div>
 
             <div className={styles.rating}>

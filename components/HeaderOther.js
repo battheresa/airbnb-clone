@@ -375,7 +375,7 @@ function Header() {
     };
 
     return (
-        <div className={styles.container} style={{ color: 'var(--black)' }} version='other'>
+        <div className={styles.container} style={{ color: 'var(--black)' }} version='other' mode={parseInt(router.query.menu) === 0 ? 'stay' : 'experience'}>
             
             {/* logo */}
             <img className={styles.logo} src={logo} alt='airbnb-logo' onClick={(e) => changeRoute(e, '/')} />
