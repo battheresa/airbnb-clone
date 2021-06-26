@@ -19,7 +19,6 @@ import { formatDate, isBefore, isSameDate, isSameMonth } from '../utilities/cust
 import { deviceBreakpoint, logoFull, logoMini, searchFilter } from '../utilities/config';
 import { getSearchLocations } from '../utilities/services';
 
-
 function Header() {
     const router = useRouter();
 
@@ -91,6 +90,10 @@ function Header() {
 
     // parse search query from url
     useEffect(() => {
+        if (router.query.menu) {
+            setSearchMenu(parseInt(router.query.menu));
+        }
+
         if (router.query.location) {
             let from = router.query.checkin.split('-');
             let dateFrom = formatDate(new Date(parseInt(from[0]), parseInt(from[1]), parseInt(from[2])));
@@ -114,15 +117,11 @@ function Header() {
                     dateText += dateTo.date;
 
                     buttonText.date = dateText;
-
-                    setSearchMenu(1);
                     setSearchDateExperience({ from: dateFrom, to: dateTo, text: dateText });
                 }
 
                 if (Object.entries(router.query).length === 5) {
                     buttonText.date = dateFrom.monthText.slice(0, 3) + ' ' + dateFrom.date + ' - ' + (dateFrom.month === dateTo.month ? dateTo.date : dateTo.monthText.slice(0, 3) + ' ' + dateTo.date);
-
-                    setSearchMenu(0);
                     setSearchDateStay({ from: dateFrom, fromText: dateFrom.monthText.slice(0, 3) + ' ' + dateFrom.date, to: dateTo, toText: dateTo.monthText.slice(0, 3) + ' ' + dateTo.date });
                 }
             } 
@@ -130,12 +129,10 @@ function Header() {
                 buttonText.date = '';
 
                 if (Object.entries(router.query).length === 4) {
-                    setSearchMenu(1);
                     setSearchDateExperience({ from: dateFrom, to: dateTo, text: '' });
                 }
 
                 if (Object.entries(router.query).length === 5) {
-                    setSearchMenu(0);
                     setSearchDateStay({ from: dateFrom, fromText: '', to: dateTo, toText: '' });
                 }
             }
@@ -155,7 +152,7 @@ function Header() {
             }
 
             setSearchButtonText(buttonText);
-            setSearchLocation(router.query.location.replaceAll('-', ', '));
+            setSearchLocation(location);
         }
     }, [router.query]);
 
@@ -396,7 +393,7 @@ function Header() {
                     {typeof searchButtonText === 'object' && <h5 className={styles.searchText} style={{ width: 'fit-content', marginRight: '20px' }}>
                         <span>{searchButtonText?.location?.split(',')[0]}</span>
                         <span>{searchButtonText?.date !== '' ? searchButtonText?.date : <span style={{ color: 'var(--grey006)', fontWeight: '300' }}>Add dates</span>}</span>
-                        {searchMenu === 0 && <span>
+                        {parseInt(router.query.menu) === 0 && <span>
                             {searchButtonText?.guest !== '' ? searchButtonText?.guest : <span style={{ color: 'var(--grey006)', fontWeight: '300'}}>Add guest</span>}
                         </span>}
                     </h5>}
@@ -485,7 +482,7 @@ function Header() {
             <div className={styles.background} style={backgroundStyle} />
 
             {/* screen cover */}
-            <div id='screenCover' className='screenCover' style={{ display: openSearch || searchSubmenu !== -1 ? 'block' : 'none' }} onClick={() => onClickScreenCover()} />
+            <div id='screenCover' className='screenCover' style={{ display: openSearch ? 'block' : 'none' }} onClick={() => onClickScreenCover()} />
         </div>
     );
 }

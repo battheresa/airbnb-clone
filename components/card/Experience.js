@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import styles from '../../styles/card/Experience.module.css';
 import StarRateRoundedIcon from '@material-ui/icons/StarRateRounded';
 
-import { formatNumber } from '../../utilities/customService';
+import { formatNumber, formatDecimal } from '../../utilities/customService';
 
 function Experience({ content, setSelected }) {
     const { title, gallery, rating, price, currency } = content;
@@ -70,7 +70,7 @@ function Experience({ content, setSelected }) {
 
             <div className={styles.rating}>
                 <StarRateRoundedIcon style={{ color: 'crimson' }} />
-                <h5>{rating}</h5>
+                <h5>{formatDecimal(rating)}</h5>
             </div>
 
             <h4>{title}</h4>

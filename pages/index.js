@@ -41,7 +41,7 @@ function Home() {
             <div className={styles.container}>
                 <div className={styles.banner}>
                     <div className={styles.bannerImage}>
-                        <img className={styles.bannerImage} src='https://images.unsplash.com/photo-1601918774946-25832a4be0d6?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1949&q=80' alt='Unsplash' />
+                        <img className={styles.bannerImage} src='https://firebasestorage.googleapis.com/v0/b/airbnb-clone-9ccdf.appspot.com/o/index.jpeg?alt=media&token=f34a7535-0536-4e00-91ab-a92531d77e8f' alt='Unsplash' />
                     </div>
                     <div className={styles.bannerText}>
                         <h1 className={styles.bannerTitle}>The Greatest Outdoors</h1>

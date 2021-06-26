@@ -2,6 +2,39 @@ import { shuffle } from './customService';
 import { initFirestore } from './firebaseConfig';
 const db = initFirestore();
 
+// get experiences ------------------------
+let storedExperiences;
+
+export const getExperiences = async () => {
+    if (storedExperiences)
+        return storedExperiences;
+    
+    let experiences = [];
+    const all = await db.collection('experiences').get();
+
+    for (let i = 0; i < 50; i ++) {
+        all.forEach(item => {
+            experiences.push(item.data());
+        });
+    }
+
+    storedExperiences = experiences;
+    return experiences;
+}
+
+export const getExperiencesByLocations = async (location) => {
+    let experiences = [];
+
+    await getExperiences().then(content => 
+        content.forEach(item => {
+            if (item.location.toLowerCase().includes(location.toLowerCase()) || location.toLowerCase().includes(item.location.toLowerCase()))
+                experiences.push(item);
+        })
+    );
+
+    return experiences;
+}
+
 // get stays ------------------------------
 let storedStays;
 

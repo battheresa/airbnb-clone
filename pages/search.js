@@ -13,7 +13,7 @@ import Gallery from '../components/modal/Gallery';
 
 import { shuffle } from '../utilities/customService';
 import { useWindowDimensions } from '../utilities/customHooks'; 
-import { getStays, getStaysByTags, getStaysByLocations, getTags } from '../utilities/services';
+import { getExperiences, getExperiencesByLocations, getStays, getStaysByTags, getStaysByLocations, getTags } from '../utilities/services';
 
 function Search() {
     const router = useRouter();
@@ -33,6 +33,9 @@ function Search() {
     const perPage = 7;
     const [ page, setPage ] = useState({});
     const [ searchPage, setSearchPage ] = useState(0);
+
+    const perRange = 20;
+    const [ range, setRange ] = useState(20);
 
     const [ selected, setSelected ] = useState([]);
     const [ openGallery, setOpenGallery ] = useState(false);
@@ -55,7 +58,7 @@ function Search() {
             nTitle = 'Stays in ' + searchLocation;
         }
         else if (searchLocation && !searchGuest) {
-            nStays = await getStaysByLocations(searchLocation);
+            nExperiences = await getExperiencesByLocations(searchLocation);
             nTitle = 'Experiences in ' + searchLocation;
         }
         else {
@@ -64,7 +67,7 @@ function Search() {
                 nTitle = 'Nearby stays';
             }
             else {
-                nExperiences = await getStays();
+                nExperiences = await getExperiences();
                 nTitle = 'Experiences near you';
             }
         }
@@ -72,11 +75,16 @@ function Search() {
         nStays.forEach(item => {
             item.gallery = shuffle(item.gallery);
         });
+
+        nExperiences.forEach(item => {
+            item.gallery = shuffle(item.gallery);
+        });
         
         setStays(nStays);
         setExperiences(nExperiences);
 
         setTitle(nTitle);
+        setRange(Math.min(perRange, nExperiences.length));
         onChangePage(Math.max(searchPage, 1), nStays);
     }, [searchTag, searchLocation, searchGuest, searchPage, searchMenu]);
 
@@ -107,7 +115,14 @@ function Search() {
         }
 
         if (router.query.location) {
-            setSearchLocation(router.query.location.replaceAll('-', ', '));
+            let location = router.query.location.replaceAll('-', ', ');
+            for (let i = location.length - 1; i >= 0; i--) {
+                if (location[i] === location[i].toUpperCase()) {
+                    location = location.substring(0, i) + ' ' + location.substring(i);
+                }
+            }
+
+            setSearchLocation(location);
         }
         else if (router.query.tag) {
             getTags().then(content => {
@@ -181,13 +196,13 @@ function Search() {
                     <h3 style={{ fontWeight: 500 }}><big>All Experiences</big></h3>
 
                     <div>
-                        {experiences.map((item, i) => (
+                        {experiences.slice(0, range).map((item, i) => (
                             <CardExperience key={i} content={item} setSelected={onChangeSelected} />
                         ))}
                     </div>
                 </div>
 
-                <button>Learn more</button>
+                {range < experiences.length && <button onClick={() => setRange(range + perRange)}>Learn more</button>}
             </div>}
 
             <Gallery content={selected} open={openGallery} onClose={onCloseGallery} />

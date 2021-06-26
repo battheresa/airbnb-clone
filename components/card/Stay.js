@@ -2,7 +2,7 @@ import styles from '../../styles/card/Stay.module.css';
 import StarRateRoundedIcon from '@material-ui/icons/StarRateRounded';
 
 import Carousel from '../utilities/Carousel';
-import { formatNumber } from '../../utilities/customService';
+import { formatNumber, formatDecimal } from '../../utilities/customService';
 
 function Stay({ content, setSelected }) {
     const { title, intro, gallery, rooms, rating, price, currency } = content;
@@ -30,7 +30,7 @@ function Stay({ content, setSelected }) {
                 <div className={styles.footer}>
                     <div>
                         <StarRateRoundedIcon style={{ color: 'crimson' }} />
-                        <h5>{rating}</h5>
+                        <h5>{formatDecimal(rating)}</h5>
                     </div>
                     <div>
                         <h3><span>{unit}{formatNumber(price)}</span> / night</h3>
