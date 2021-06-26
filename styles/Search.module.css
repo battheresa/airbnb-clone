@@ -58,8 +58,9 @@
 .experiences > div {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 15px;
+    gap: 30px 15px;
     margin-top: 15px;
+    width: 100%;
 }
 
 @media (max-width: 1150px) {

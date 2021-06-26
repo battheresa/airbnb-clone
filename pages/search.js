@@ -7,6 +7,7 @@ import styles from '../styles/Search.module.css';
 import Header from '../components/HeaderOther';
 import Footer from '../components/Footer';
 import CardStay from '../components/card/Stay';
+import CardExperience from '../components/card/Experience';
 import Pagination from '../components/utilities/Pagination';
 import Gallery from '../components/modal/Gallery';
 
@@ -181,7 +182,7 @@ function Search() {
 
                     <div>
                         {experiences.map((item, i) => (
-                            <div>{item.title}</div>
+                            <CardExperience key={i} content={item} setSelected={onChangeSelected} />
                         ))}
                     </div>
                 </div>

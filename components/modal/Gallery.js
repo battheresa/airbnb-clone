@@ -136,7 +136,7 @@ function Gallery({ content, open, onClose }) {
     }, [content]);
 
     return (
-        <section className={styles.container} style={{ transform: `translateY(${open ? 0 : height}px)` }}>
+        <section className={styles.container} style={{ transform: `translateY(${open ? 0 : height + 50}px)` }}>
             <button onClick={() => onClose()}><NavigateBeforeIcon fontSize='large' /></button>
 
             <div className={styles.layout}>
