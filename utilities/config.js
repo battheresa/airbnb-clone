@@ -21,6 +21,11 @@ export const searchFilter = [
     { menu: 'Experiences', submenu: ['Location', 'Date']}
 ];
 
+export const searchFilterMenu = [
+    { menu: 'Find a place to stay', submenu: 'Entire homes, rooms & more', image: 'https://a0.muscache.com/4ea/air/v2/pictures/02a9e2fa-1d42-409a-b040-99e8eeeb0448.jpg' },
+    { menu: 'Find an experiences', submenu: 'Activities hosted by locals', image: 'https://a0.muscache.com/4ea/air/v2/pictures/d0652aac-13ac-4378-a97e-b10d2289d97e.jpg' }
+];
+
 export const navingations = [
     { header: 'About', content: [{ text: 'How Airbnb Works', link: '' }, { text: 'Newsroom', link: ''}, { text: 'Investor', link: '' }, { text: 'Airbnb Plus', link: '' }, { text: 'Airbnb Luxe', link: '' }, { text: 'HotelTonight', link: '' }, { text: 'Airbnb for Work', link: '' }, { text: 'Olympics', link: '' }, { text: 'Careers', link: '' }]},
     { header: 'Community', content: [{ text: 'Diversity & Belonging', link: '' }, { text: 'Against Discrimination', link: ''}, { text: 'Accessibility', link: '' }, { text: 'Airbnb Associates', link: '' }, { text: 'Frontline Stays', link: '' }, { text: 'Invite Friends', link: '' }, { text: 'Gift Cards', link: '' }, { text: 'Airbnb.org', link: '' }]},

@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect, useRef } from 'react';
 
-import styles from '../../../styles/Header.module.css';
+import styles from '../../../styles/header/Small.module.css';
 import { config, animated, useChain, useSpring, useSpringRef } from '@react-spring/web';
 
 import MenuList from '../../modal/MenuList';
@@ -151,8 +151,6 @@ function Header() {
 
             Object.entries(params).forEach(item => {
                 fullPath += item[0] + '=';
-
-                console.log(item);
 
                 if (typeof item[1] === 'string')
                     fullPath += item[1].replaceAll(' ', '').replaceAll(',', '-');

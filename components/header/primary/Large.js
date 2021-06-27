@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect, useRef } from 'react';
 
-import styles from '../../../styles/Header.module.css';
+import styles from '../../../styles/header/Large.module.css';
 import { config, animated, useChain, useSpring, useSpringRef } from '@react-spring/web';
 
 import MenuList from '../../modal/MenuList';
@@ -154,8 +154,6 @@ function Header() {
 
             Object.entries(params).forEach(item => {
                 fullPath += item[0] + '=';
-
-                console.log(item);
 
                 if (typeof item[1] === 'string')
                     fullPath += item[1].replaceAll(' ', '').replaceAll(',', '-');
@@ -355,7 +353,7 @@ function Header() {
                             <h6>{searchFilter[0].submenu[0]}</h6>
                             <input placeholder='Where are you going?' value={searchLocation} onChange={(e) => setSearchLocation(e.target.value)} />
                         </div>
-                        <MenuList open={searchSubmenu === 0} content={searchLocationList} setSelected={onEnterSearchLocation} />
+                        <MenuList open={searchSubmenu === 0} mode='modal' content={searchLocationList} type='locations' setSelected={onEnterSearchLocation} />
                         
                         {/* first submenu group */}
                         <div className={`${styles.searchFieldMenu} ${styles.searchFieldMenuSeperator}`} style={getSubmenuStyle(0, 1)} onMouseEnter={() => onMouseEnterSubmenu(1)} onMouseLeave={() => onMouseLeaveSubmenu(1)} onClick={() => onClickSubmenu(1)} ref={submenuList[1]}>
