@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import styles from '../styles/Home.module.css';
 
-import Header from '../components/HeaderHome';
+import Header from '../components/header/Header';
 import Footer from '../components/Footer';
 import Card from '../components/card/Home';
 
@@ -36,7 +36,7 @@ function Home() {
                 <link rel='icon' href='/favicon.ico' />
             </Head>
 
-            <Header />
+            <Header mode={'primary'} />
 
             <div className={styles.container}>
                 <div className={styles.banner}>

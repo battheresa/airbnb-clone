@@ -1,23 +1,22 @@
 import { useRouter } from 'next/router';
-
 import { useState, useEffect, useRef } from 'react';
 
-import styles from '../styles/Header.module.css';
+import styles from '../../../styles/Header.module.css';
 import { config, animated, useChain, useSpring, useSpringRef } from '@react-spring/web';
 
-import MenuList from './modal/MenuList';
-import DateInput from './modal/DateInput';
-import GuestInput from './modal/GuestInput';
+import MenuList from '../../modal/MenuList';
+import DateInput from '../../modal/DateInput';
+import GuestInput from '../../modal/GuestInput';
 
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
 import LanguageRoundedIcon from '@material-ui/icons/LanguageRounded';
 import MenuRoundedIcon from '@material-ui/icons/MenuRounded';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
-import { useWindowDimensions, useWindowOffset, useMousedownTarget } from '../utilities/customHooks';
-import { formatDate, isBefore, isSameDate, isSameMonth } from '../utilities/customService';
-import { deviceBreakpoint, logoFull, logoMini, searchFilter } from '../utilities/config';
-import { getSearchLocations } from '../utilities/services';
+import { useWindowDimensions, useWindowOffset, useMousedownTarget } from '../../../utilities/customHooks';
+import { isBefore, isSameDate, isSameMonth } from '../../../utilities/customService';
+import { deviceBreakpoint, logoFull, logoMini, searchFilter } from '../../../utilities/config';
+import { getSearchLocations } from '../../../utilities/services';
 
 function Header() {
     const router = useRouter();
@@ -29,7 +28,7 @@ function Header() {
     const benchmarkOffsetY = 120;
     const [ curOffsetY, setCurOffsetY ] = useState(0);
 
-    const [ logo, setLogo ] = useState(logoFull.coral);
+    const [ logo, setLogo ] = useState(logoFull.black);
     const [ backgroundStyle, setBackgroundStyle ] = useState({ backgroundColor: 'var(--transparent)', boxShadow: 'none', top: '-140px' });
 
     const [ search, setSearch ]  = useState(true);
@@ -39,8 +38,6 @@ function Header() {
     const [ searchSubmenu, setSearchSubmenu ] = useState(-1);
 
     const submenuList = [useRef(), useRef(), useRef(), useRef(), useRef()];
-
-    const [ searchButtonText, setSearchButtonText ] = useState('Start your search');
 
     const [ locations, setLocations ] = useState([]);
     const [ searchLocationList, setSearchLocationList ] = useState([]);
@@ -88,89 +85,43 @@ function Header() {
         getSearchLocations().then(content => setLocations(content));
     }, []);
 
-    // parse search query from url
-    useEffect(() => {
-        if (router.query.menu) {
-            setSearchMenu(parseInt(router.query.menu));
-        }
-
-        if (router.query.location) {
-            let from = router.query.checkin.split('-');
-            let dateFrom = formatDate(new Date(parseInt(from[0]), parseInt(from[1]), parseInt(from[2])));
-            
-            let to = router.query.checkout.split('-');
-            let dateTo = formatDate(new Date(parseInt(to[0]), parseInt(to[1]), parseInt(to[2])));
-            
-            let location = router.query.location.replaceAll('-', ', ');
-            for (let i = location.length - 1; i >= 0; i--) {
-                if (location[i] === location[i].toUpperCase()) {
-                    location = location.substring(0, i) + ' ' + location.substring(i);
-                }
-            }
-
-            let buttonText = { location: location, date: '', guest: '' };
-            
-            if (router.query.checkin && router.query.checkout) {
-                if (Object.entries(router.query).length === 4) {
-                    let dateText = dateFrom.monthText + ' ' + dateFrom.date;
-                    dateText += dateFrom.month === dateTo.month ? ' - ' : ' - ' + dateTo.monthText.slice(0, 3) + ' ';
-                    dateText += dateTo.date;
-
-                    buttonText.date = dateText;
-                    setSearchDateExperience({ from: dateFrom, to: dateTo, text: dateText });
-                }
-
-                if (Object.entries(router.query).length === 5) {
-                    buttonText.date = dateFrom.monthText.slice(0, 3) + ' ' + dateFrom.date + ' - ' + (dateFrom.month === dateTo.month ? dateTo.date : dateTo.monthText.slice(0, 3) + ' ' + dateTo.date);
-                    setSearchDateStay({ from: dateFrom, fromText: dateFrom.monthText.slice(0, 3) + ' ' + dateFrom.date, to: dateTo, toText: dateTo.monthText.slice(0, 3) + ' ' + dateTo.date });
-                }
-            } 
-            else {
-                buttonText.date = '';
-
-                if (Object.entries(router.query).length === 4) {
-                    setSearchDateExperience({ from: dateFrom, to: dateTo, text: '' });
-                }
-
-                if (Object.entries(router.query).length === 5) {
-                    setSearchDateStay({ from: dateFrom, fromText: '', to: dateTo, toText: '' });
-                }
-            }
-
-            if (router.query.quest) {
-                let guest = router.query.guest.split('-');
-                let guestText = `${parseInt(guest[0]) + parseInt(guest[1])} guest${parseInt(guest[0]) + parseInt(guest[1]) <= 1 ? '' : 's'}`;
-
-                if (parseInt(guest[2]) > 0)
-                    guestText += `, ${parseInt(guest[2])} infant${parseInt(guest[2]) === 1 ? '' : 's'}`;
-
-                if (parseInt(guest[0]) + parseInt(guest[1]) + parseInt(guest[2]) === 0)
-                    guestText = '';
-
-                buttonText.guest = guestText.split(',')[0];
-                setSearchGuest({ total: guestText, adults: parseInt(guest[0]), children: parseInt(guest[1]), infants: parseInt(guest[2]) });
-            }
-
-            setSearchButtonText(buttonText);
-            setSearchLocation(location);
-        }
-    }, [router.query]);
-
     // update background styling
     useEffect(() => {
         let nBackground = {};
-        nBackground.backgroundColor = 'var(--white)';
-        nBackground.boxShadow = '0px 2px 6px rgba(0, 0, 0, 0.1)';
-        nBackground.top = search ? width < deviceBreakpoint.medium - 60 ? '0px' : '-55px' : '-140px';
+        nBackground.backgroundColor = 'var(--transparent)';
+        nBackground.boxShadow = 'none';
+        nBackground.top = '-140px';
+
+        if (offsetY > benchmarkOffsetY) {
+            nBackground.backgroundColor = 'var(--white)';
+            nBackground.boxShadow = '0px 2px 6px rgba(0, 0, 0, 0.1)';
+            nBackground.top = search ? width < deviceBreakpoint.medium - 60 ? '0px' : '-55px' : '-140px';
+        }
 
         setBackgroundStyle(nBackground);
-        setSearch(openSearch);
+        setSearch(offsetY > benchmarkOffsetY ? openSearch : true);
         setOpenSearch(Math.abs(curOffsetY - offsetY) > benchmarkOffsetY + 50 ? false : openSearch);
     }, [search, openSearch, offsetY]);
 
     // update content on width change
     useEffect(() => {
-        let nlogo = width < deviceBreakpoint.medium ? logoMini.coral : logoFull.coral;
+        let nlogo = undefined;
+
+        if (width < deviceBreakpoint.medium) {
+            nlogo = logoMini.white;
+
+            if (offsetY > benchmarkOffsetY) {
+                nlogo = logoMini.black;
+            }
+        }
+        else {
+            nlogo = logoFull.white;
+
+            if (offsetY > benchmarkOffsetY) {
+                nlogo = logoFull.black;
+            }
+        }
+
         setLogo(nlogo !== undefined ? nlogo : logo);
     }, [width, offsetY]);
 
@@ -197,7 +148,6 @@ function Header() {
     // redirect page
     const changeRoute = (event, path, params) => {
         event.preventDefault();
-        setOpenSearch(false);
 
         if (params) {
             let fullPath = path + '?menu=' + searchMenu + '&';
@@ -311,8 +261,8 @@ function Header() {
     const getSubmenuStyle = (menu, submenu) => {
         let nStyle = {};
         nStyle.display = (searchMenu === menu || submenu === 0) ? 'flex' : 'none';
-        nStyle.color = 'var(--black)';
-
+        
+        if (!search) { nStyle.color = 'var(--white)'; }
         if (submenu === 0) { nStyle.maxWidth = searchMenu === 0 ? '30%' : '50%'; }
         if (submenu === 3) { nStyle.minWidth = '25%'; }
 
@@ -372,36 +322,17 @@ function Header() {
     };
 
     return (
-        <div className={styles.container} style={{ color: 'var(--black)' }} version='other' mode={parseInt(router.query.menu) === 0 ? 'stay' : 'experience'}>
+        <div className={styles.container} style={{ color: offsetY > benchmarkOffsetY ? 'var(--black)' : 'var(--white)' }} version='home'>
             
             {/* logo */}
             <img className={styles.logo} src={logo} alt='airbnb-logo' onClick={(e) => changeRoute(e, '/')} />
 
-            {/* search (small screen) */}
-            <div className={styles.searchInput}>
-                <SearchRoundedIcon style={{ color: 'var(--black)' }} />
-                <input placeholder='Where are you going?' value={searchLocation} onChange={(e) => setSearchLocation(e.target.value)} />
-            </div>
-
-            {/* search (normal/large screen) */}
+            {/* search */}
             <div className={styles.search}>
 
                 {/* search button */}
                 {!search && <button className={styles.searchButton} onClick={() => onClickOpenSearch()}>
-                    
-                    {/* search filters */}
-                    {typeof searchButtonText === 'object' && <h5 className={styles.searchText} style={{ width: 'fit-content', marginRight: '20px' }}>
-                        <span>{searchButtonText?.location?.split(',')[0]}</span>
-                        <span>{searchButtonText?.date !== '' ? searchButtonText?.date : <span style={{ color: 'var(--grey006)', fontWeight: '300' }}>Add dates</span>}</span>
-                        {parseInt(router.query.menu) === 0 && <span>
-                            {searchButtonText?.guest !== '' ? searchButtonText?.guest : <span style={{ color: 'var(--grey006)', fontWeight: '300'}}>Add guest</span>}
-                        </span>}
-                    </h5>}
-
-                    {/* default text */}
-                    {typeof searchButtonText === 'string' && <h5 className={styles.searchText}>{searchButtonText}</h5>}
-
-                    {/* search icon */}
+                    <h5>Start your search</h5>
                     <span className={styles.searchIcon}><SearchRoundedIcon fontSize='small' /></span>
                 </button>}
 
@@ -410,7 +341,7 @@ function Header() {
                     {searchFilter.map((item, i) => (
                         <div key={`menu_${item.menu}`} className={`${styles.searchMenuButton} ${searchMenu === i ? styles.searchMenuButtonActive : styles.searchMenuButtonInactive}`} onClick={() => onClickMenu(i)}>
                             <p>{item.menu}</p>
-                            <div style={{ backgroundColor: 'var(--black)' }} />
+                            <div style={{ backgroundColor: offsetY > benchmarkOffsetY ? 'var(--black)' : 'var(--white)' }} />
                         </div>
                     ))}
                 </div>}
@@ -443,9 +374,9 @@ function Header() {
                         </div>
                         <DateInput open={searchSubmenu === 1 || searchSubmenu === 2} mode={true} submenu={searchSubmenu} date={searchDateStay} setDate={onEnterSearchDateStay} />
 
-                        <div className={styles.searchFieldMenu} style={getSubmenuStyle(0, 3)} onMouseEnter={() => onMouseEnterSubmenu(3)} onMouseLeave={() => onMouseLeaveSubmenu(3)} ref={submenuList[3]}>
-                            <h6 onClick={() => onClickSubmenu(3)}>{searchFilter[0].submenu[3]}</h6>
-                            <div onClick={() => onClickSubmenu(3)}>
+                        <div className={styles.searchFieldMenu} style={getSubmenuStyle(0, 3)} onClick={() => onClickSubmenu(3)} onMouseEnter={() => onMouseEnterSubmenu(3)} onMouseLeave={() => onMouseLeaveSubmenu(3)} ref={submenuList[3]}>
+                            <h6>{searchFilter[0].submenu[3]}</h6>
+                            <div>
                                 <p><small>{searchGuest.total === '' && 'Add guests'}</small></p>
                                 <p><small>{searchGuest.total !== '' && searchGuest.total}</small></p>
                             </div>
@@ -454,9 +385,9 @@ function Header() {
                         <GuestInput open={searchSubmenu === 3} guest={searchGuest} setGuest={onEnterSearchGuest}/>
 
                         {/* second submenu group */}
-                        <div className={styles.searchFieldMenu} style={getSubmenuStyle(1, 1)} onMouseEnter={() => onMouseEnterSubmenu(4)} onMouseLeave={() => onMouseLeaveSubmenu(4)} ref={submenuList[4]}>
-                            <h6 onClick={() => onClickSubmenu(4)}>{searchFilter[1].submenu[1]}</h6>
-                            <div onClick={() => onClickSubmenu(4)}>
+                        <div className={styles.searchFieldMenu} style={getSubmenuStyle(1, 1)} onClick={() => onClickSubmenu(4)} onMouseEnter={() => onMouseEnterSubmenu(4)} onMouseLeave={() => onMouseLeaveSubmenu(4)} ref={submenuList[4]}>
+                            <h6>{searchFilter[1].submenu[1]}</h6>
+                            <div>
                                 <p><small>{searchDateExperience.text === '' && 'Add when you want to go'}</small></p>
                                 <p><small>{searchDateExperience.text !== '' && searchDateExperience.text}</small></p>
                             </div>
@@ -482,7 +413,7 @@ function Header() {
             <div className={styles.background} style={backgroundStyle} />
 
             {/* screen cover */}
-            <div id='screenCover' className='screenCover' style={{ display: openSearch ? 'block' : 'none' }} onClick={() => onClickScreenCover()} />
+            <div id='screenCover' className='screenCover' style={{ display: openSearch || searchSubmenu !== -1 ? 'block' : 'none' }} mode={offsetY < benchmarkOffsetY ? 'transparent' : ''} onClick={() => onClickScreenCover()} />
         </div>
     );
 }

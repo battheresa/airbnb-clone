@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import styles from '../styles/Search.module.css';
 
-import Header from '../components/HeaderOther';
+import Header from '../components/header/Header';
 import Footer from '../components/Footer';
 import CardStay from '../components/card/Stay';
 import CardExperience from '../components/card/Experience';
@@ -171,7 +171,7 @@ function Search() {
                 <link rel='icon' href='/favicon.ico' />
             </Head>
 
-            <Header />
+            <Header mode={'secondary'} />
 
             {searchMenu === 0 && <div className={styles.containerStay}>
                 <div className={styles.stays}>

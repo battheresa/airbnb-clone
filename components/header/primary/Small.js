@@ -1,22 +1,19 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect, useRef } from 'react';
 
-import styles from '../styles/Header.module.css';
+import styles from '../../../styles/Header.module.css';
 import { config, animated, useChain, useSpring, useSpringRef } from '@react-spring/web';
 
-import MenuList from './modal/MenuList';
-import DateInput from './modal/DateInput';
-import GuestInput from './modal/GuestInput';
+import MenuList from '../../modal/MenuList';
+import DateInput from '../../modal/DateInput';
+import GuestInput from '../../modal/GuestInput';
 
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
-import LanguageRoundedIcon from '@material-ui/icons/LanguageRounded';
-import MenuRoundedIcon from '@material-ui/icons/MenuRounded';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
-import { useWindowDimensions, useWindowOffset, useMousedownTarget } from '../utilities/customHooks';
-import { isBefore, isSameDate, isSameMonth } from '../utilities/customService';
-import { deviceBreakpoint, logoFull, logoMini, searchFilter } from '../utilities/config';
-import { getSearchLocations } from '../utilities/services';
+import { useWindowDimensions, useWindowOffset, useMousedownTarget } from '../../../utilities/customHooks';
+import { isBefore, isSameDate, isSameMonth } from '../../../utilities/customService';
+import { deviceBreakpoint, logoFull, logoMini, searchFilter } from '../../../utilities/config';
+import { getSearchLocations } from '../../../utilities/services';
 
 function Header() {
     const router = useRouter();
@@ -324,95 +321,10 @@ function Header() {
     return (
         <div className={styles.container} style={{ color: offsetY > benchmarkOffsetY ? 'var(--black)' : 'var(--white)' }} version='home'>
             
-            {/* logo */}
-            <img className={styles.logo} src={logo} alt='airbnb-logo' onClick={(e) => changeRoute(e, '/')} />
-
-            {/* search (small screen) */}
+            {/* search */}
             <div className={styles.searchInput}>
                 <SearchRoundedIcon style={{ color: 'var(--black)' }} />
                 <input placeholder='Where are you going?' value={searchLocation} onChange={(e) => setSearchLocation(e.target.value)} />
-            </div>
-
-            {/* search (normal/large screen) */}
-            <div className={styles.search}>
-
-                {/* search button */}
-                {!search && <button className={styles.searchButton} onClick={() => onClickOpenSearch()}>
-                    <h5>Start your search</h5>
-                    <span className={styles.searchIcon}><SearchRoundedIcon fontSize='small' /></span>
-                </button>}
-
-                {/* search menu */}
-                {search && <div className={styles.searchMenu}>
-                    {searchFilter.map((item, i) => (
-                        <div key={`menu_${item.menu}`} className={`${styles.searchMenuButton} ${searchMenu === i ? styles.searchMenuButtonActive : styles.searchMenuButtonInactive}`} onClick={() => onClickMenu(i)}>
-                            <p>{item.menu}</p>
-                            <div style={{ backgroundColor: offsetY > benchmarkOffsetY ? 'var(--black)' : 'var(--white)' }} />
-                        </div>
-                    ))}
-                </div>}
-
-                {/* search field */}
-                <animated.div className={styles.searchField} style={searchFieldStyle}>
-                    <animated.div style={searchFieldMenuStyle}>
-
-                        {/* common submenu */}
-                        <div className={`${styles.searchFieldMenu} ${styles.searchFieldMenuSeperator}`} style={getSubmenuStyle(-1, 0)} onMouseEnter={() => onMouseEnterSubmenu(0)} onMouseLeave={() => onMouseLeaveSubmenu(0)} onClick={() => onClickSubmenu(0)} ref={submenuList[0]}>
-                            <h6>{searchFilter[0].submenu[0]}</h6>
-                            <input placeholder='Where are you going?' value={searchLocation} onChange={(e) => setSearchLocation(e.target.value)} />
-                        </div>
-                        <MenuList open={searchSubmenu === 0} content={searchLocationList} setSelected={onEnterSearchLocation} />
-                        
-                        {/* first submenu group */}
-                        <div className={`${styles.searchFieldMenu} ${styles.searchFieldMenuSeperator}`} style={getSubmenuStyle(0, 1)} onMouseEnter={() => onMouseEnterSubmenu(1)} onMouseLeave={() => onMouseLeaveSubmenu(1)} onClick={() => onClickSubmenu(1)} ref={submenuList[1]}>
-                            <h6>{searchFilter[0].submenu[1]}</h6>
-                            <div>
-                                <p><small>{searchDateStay.fromText === '' && 'Add dates'}</small></p>
-                                <p><small>{searchDateStay.fromText !== '' && searchDateStay.fromText}</small></p>
-                            </div>
-                        </div>
-                        <div className={`${styles.searchFieldMenu} ${styles.searchFieldMenuSeperator}`} style={getSubmenuStyle(0, 2)} onMouseEnter={() => onMouseEnterSubmenu(2)} onMouseLeave={() => onMouseLeaveSubmenu(2)} onClick={() => onClickSubmenu(2)} ref={submenuList[2]}>
-                            <h6>{searchFilter[0].submenu[2]}</h6>
-                            <div>
-                                <p><small>{searchDateStay.toText === '' && 'Add dates'}</small></p>
-                                <p><small>{searchDateStay.toText !== '' && searchDateStay.toText}</small></p>
-                            </div>
-                        </div>
-                        <DateInput open={searchSubmenu === 1 || searchSubmenu === 2} mode={true} submenu={searchSubmenu} date={searchDateStay} setDate={onEnterSearchDateStay} />
-
-                        <div className={styles.searchFieldMenu} style={getSubmenuStyle(0, 3)} onClick={() => onClickSubmenu(3)} onMouseEnter={() => onMouseEnterSubmenu(3)} onMouseLeave={() => onMouseLeaveSubmenu(3)} ref={submenuList[3]}>
-                            <h6>{searchFilter[0].submenu[3]}</h6>
-                            <div>
-                                <p><small>{searchGuest.total === '' && 'Add guests'}</small></p>
-                                <p><small>{searchGuest.total !== '' && searchGuest.total}</small></p>
-                            </div>
-                            <span className={styles.searchIcon} onClick={(e) => changeRoute(e, '/search', { location: searchLocation, checkin: searchDateStay.from, checkout: searchDateStay.to, guest: searchGuest })}><SearchRoundedIcon /></span>
-                        </div>
-                        <GuestInput open={searchSubmenu === 3} guest={searchGuest} setGuest={onEnterSearchGuest}/>
-
-                        {/* second submenu group */}
-                        <div className={styles.searchFieldMenu} style={getSubmenuStyle(1, 1)} onClick={() => onClickSubmenu(4)} onMouseEnter={() => onMouseEnterSubmenu(4)} onMouseLeave={() => onMouseLeaveSubmenu(4)} ref={submenuList[4]}>
-                            <h6>{searchFilter[1].submenu[1]}</h6>
-                            <div>
-                                <p><small>{searchDateExperience.text === '' && 'Add when you want to go'}</small></p>
-                                <p><small>{searchDateExperience.text !== '' && searchDateExperience.text}</small></p>
-                            </div>
-                            <span className={styles.searchIcon} onClick={(e) => changeRoute(e, '/search', { location: searchLocation, checkin: searchDateExperience.from, checkout: searchDateExperience.to })}><SearchRoundedIcon /></span>
-                        </div>
-                        <DateInput open={searchSubmenu === 4} mode={false} submenu={searchSubmenu} date={searchDateExperience} setDate={onEnterSearchDateExperience} />
-                    </animated.div>
-                </animated.div>
-            </div>
-
-            {/* menu */}
-            <div className={styles.menu}>
-                <h5 className={styles.menuItem}>Become a host</h5>
-                <LanguageRoundedIcon fontSize='small' className={styles.menuItem} />
-
-                <div className={styles.avatar}>
-                    <MenuRoundedIcon fontSize='small' style={{ marginRight: '8px'}} />
-                    <AccountCircleIcon fontSize='large' style={{ color: 'var(--grey007)'}} />
-                </div>
             </div>
 
             {/* header background */}
