@@ -50,14 +50,16 @@ function Search() {
             nStays = await getStaysByTags(searchTag.id);
             nTitle = searchTag.text;
         }
-        else if (searchLocation && searchGuest) {
+        else if (searchLocation && searchMenu === 0) {
             let data = await getStaysByLocations(searchLocation);
-            let totalGuest = searchGuest.adults + searchGuest.children;
+
+            console.log(searchLocation)
+            let totalGuest = (searchGuest.adults || 0) + (searchGuest.children || 0);
 
             nStays = data.filter(item => item.rooms.guest >= totalGuest);
             nTitle = 'Stays in ' + searchLocation;
         }
-        else if (searchLocation && !searchGuest) {
+        else if (searchLocation && searchMenu === 1) {
             nExperiences = await getExperiencesByLocations(searchLocation);
             nTitle = 'Experiences in ' + searchLocation;
         }
@@ -101,19 +103,6 @@ function Search() {
             setSearchPage(parseInt(router.query.page));
         }
 
-        if (router.query.guest) {
-            let guest = router.query.guest.split('-');
-            let guestText = `${parseInt(guest[0]) + parseInt(guest[1])} guest${parseInt(guest[0]) + parseInt(guest[1]) <= 1 ? '' : 's'}`;
-
-            if (parseInt(guest[2]) > 0)
-                guestText += `, ${parseInt(guest[2])} infant${parseInt(guest[2]) === 1 ? '' : 's'}`;
-
-            if (parseInt(guest[0]) + parseInt(guest[1]) + parseInt(guest[2]) === 0)
-                guestText = '';
-
-            setSearchGuest({ total: guestText, adults: parseInt(guest[0]), children: parseInt(guest[1]), infants: parseInt(guest[2]) });
-        }
-
         if (router.query.location) {
             let location = router.query.location.replaceAll('-', ', ');
             for (let i = location.length - 1; i >= 0; i--) {
@@ -132,7 +121,22 @@ function Search() {
         else {
             setSearchTag(undefined);
             setSearchLocation(undefined);
-            setSearchGuest(undefined);
+        }
+
+        if (router.query.guest) {
+            let guest = router.query.guest.split('-');
+            let guestText = `${parseInt(guest[0]) + parseInt(guest[1])} guest${parseInt(guest[0]) + parseInt(guest[1]) <= 1 ? '' : 's'}`;
+
+            if (parseInt(guest[2]) > 0)
+                guestText += `, ${parseInt(guest[2])} infant${parseInt(guest[2]) === 1 ? '' : 's'}`;
+
+            if (parseInt(guest[0]) + parseInt(guest[1]) + parseInt(guest[2]) === 0)
+                guestText = '';
+
+            setSearchGuest({ total: guestText, adults: parseInt(guest[0]), children: parseInt(guest[1]), infants: parseInt(guest[2]) });
+        }
+        else {
+            setSearchGuest({ total: '', adults: 0, children: 0, infants: 0 });
         }
     }, [router.query.location, router.query.tag]);
 

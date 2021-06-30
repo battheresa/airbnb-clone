@@ -267,6 +267,8 @@
     background-color: var(--airbnb);
     border-radius: 100px;
     padding: 6px;
+
+    z-index: 5;
 }
 
 .searchIcon:hover {

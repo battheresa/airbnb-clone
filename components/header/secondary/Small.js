@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import { useState, useEffect, useRef } from 'react';
 
 import styles from '../../../styles/header/Small.module.css';
@@ -13,11 +12,8 @@ import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
 import { useWindowDimensions, useWindowOffset, useMousedownTarget } from '../../../utilities/customHooks';
 import { isBefore, isSameDate, isSameMonth } from '../../../utilities/customService';
 import { deviceBreakpoint, logoFull, logoMini, searchFilter } from '../../../utilities/config';
-import { getSearchLocations } from '../../../utilities/services';
 
-function Header() {
-    const router = useRouter();
-
+function Header({ locations, changeRoute, searchMenu, onChangeSearchMenu }) {
     const { width, height } = useWindowDimensions();
     const { offsetX, offsetY } = useWindowOffset(); 
     const target = useMousedownTarget();
@@ -31,12 +27,10 @@ function Header() {
     const [ search, setSearch ]  = useState(true);
     const [ openSearch, setOpenSearch ] = useState(false);
 
-    const [ searchMenu, setSearchMenu ] = useState(0);
     const [ searchSubmenu, setSearchSubmenu ] = useState(-1);
 
     const submenuList = [useRef(), useRef(), useRef(), useRef(), useRef()];
 
-    const [ locations, setLocations ] = useState([]);
     const [ searchLocationList, setSearchLocationList ] = useState([]);
     const [ searchLocation, setSearchLocation ] = useState('');
 
@@ -76,11 +70,6 @@ function Header() {
 
     // config animation order
     useChain(search || openSearch ? [searchFieldRef, searchFieldMenuRef] : [searchFieldMenuRef, searchFieldRef], [0, 0.1]);
-
-    // get search locations
-    useEffect(() => {
-        getSearchLocations().then(content => setLocations(content));
-    }, []);
 
     // update background styling
     useEffect(() => {
@@ -142,40 +131,6 @@ function Header() {
         }
     }, [locations, searchLocation]);
 
-    // redirect page
-    const changeRoute = (event, path, params) => {
-        event.preventDefault();
-
-        if (params) {
-            let fullPath = path + '?menu=' + searchMenu + '&';
-
-            Object.entries(params).forEach(item => {
-                fullPath += item[0] + '=';
-
-                if (typeof item[1] === 'string')
-                    fullPath += item[1].replaceAll(' ', '').replaceAll(',', '-');
-
-                if (typeof item[1] === 'object') {
-                    if (item[1].date !== undefined)
-                        fullPath += item[1].year + '-' + item[1].month + '-' + item[1].date;
-
-                    if (item[1].adults !== undefined)
-                        fullPath += item[1].adults + '-' + item[1].children + '-' + item[1].infants;
-                }
-
-                if (item[0] !== Object.keys(params)[Object.keys(params).length - 1])
-                    fullPath += '&';
-            });
-            
-            fullPath += '&page=1';
-            router.push(fullPath);
-            return;
-        }
-
-        path += '?menu=' + searchMenu + '&page=1';
-        router.push(path);
-    };
-
     // update on click screen cover
     const onClickScreenCover = () => {
         if (target === 'screenCover') {
@@ -193,7 +148,7 @@ function Header() {
 
     // update styling when click on menu
     const onClickMenu = (menu) => {
-        setSearchMenu(menu);
+        onChangeSearchMenu(menu);
         setSearchSubmenu(-1);
 
         for (let i = 0; i < 5; i ++) { 
