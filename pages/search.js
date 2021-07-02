@@ -206,10 +206,10 @@ function Search() {
 
                 {range < experiences.length && <button onClick={() => setRange(range + perRange)}>Learn more</button>}
             </div>}
+        
+            <Footer />
 
             <Gallery content={selected} open={openGallery} onClose={onCloseGallery} />
-
-            <Footer />
         </div>
     );
 }

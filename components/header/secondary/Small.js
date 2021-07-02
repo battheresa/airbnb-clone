@@ -90,19 +90,16 @@ function Header(props) {
     const onEnterInputDateStay = (step, selectedDate) => {
         if (step === 'from' && inputDateStay.to && isBefore(inputDateStay.to, selectedDate)) {
             setInputDateStay({ from: selectedDate, fromText: selectedDate.monthText.slice(0, 3) + ' ' + selectedDate.date, to: undefined, toText: '' });
-            onChangeSearchSubmenu(2);
             return;
         }
 
         if (step === 'from' && searchSubmenu === 1) {
             setInputDateStay({ from: selectedDate, fromText: selectedDate.monthText.slice(0, 3) + ' ' + selectedDate.date, to: inputDateStay.to, toText: inputDateStay.toText });
-            onChangeSearchSubmenu(2);
             return;
         }
         
         if (step === 'from') {
             setInputDateStay({ from: selectedDate, fromText: selectedDate.monthText.slice(0, 3) + ' ' + selectedDate.date, to: undefined, toText: '' });
-            onChangeSearchSubmenu(2);
             return;
         }
 
@@ -141,7 +138,7 @@ function Header(props) {
                 <div className={styles.searchButton} version='other' onClick={() => onClickOpenSearch(true, -1)}>
                     <div>
                         <button onClick={(e) => changeRoute(e, '/')}><NavigateBeforeIcon /></button>
-                        {typeof searchButtonText === 'object' && <h5>{searchButtonText?.location?.split(',')[0]}</h5>}
+                        {typeof searchButtonText === 'object' && <h5>{searchButtonText?.location !== '' ? searchButtonText?.location?.split(',')[0] : <span style={{ color: 'var(--grey006)', fontWeight: '300' }}>Add locations</span>}</h5>}
                         {typeof searchButtonText === 'string' && <h5>{searchButtonText}</h5>}
                     </div>
                     <h5>{searchButtonText?.date !== '' ? searchButtonText?.date : <span style={{ color: 'var(--grey006)', fontWeight: '300' }}>Add dates</span>}</h5>
@@ -151,7 +148,7 @@ function Header(props) {
                 {search && <div className={styles.searchMenu} version='other'>
                     <h4>Edit your search</h4>
                     <div className={styles.searchSummary}>
-                        <h5 onClick={() => onChangeSearchSubmenu(0)}><SearchRoundedIcon /><span>{searchButtonText?.location}</span></h5>
+                        <h5 onClick={() => onChangeSearchSubmenu(0)}><SearchRoundedIcon /><span>{searchButtonText?.location !== '' ? searchButtonText?.location : <span style={{ color: 'var(--grey006)', fontWeight: '300' }}>Add locations</span>}</span></h5>
                         <div>
                             <h5 onClick={() => onChangeSearchSubmenu(4)}><TodayIcon /><span>{searchButtonText?.date !== '' ? searchButtonText?.date : <span style={{ color: 'var(--grey006)', fontWeight: '300' }}>Add dates</span>}</span></h5>
                             {searchMenu === 0 && <h5 onClick={() => onChangeSearchSubmenu(3)}><PeopleIcon /><span>{searchButtonText?.guest !== '' ? searchButtonText?.guest : <span style={{ color: 'var(--grey006)', fontWeight: '300' }}>Add guests</span>}</span></h5>}

@@ -18,8 +18,8 @@ import { isBefore, isSameDate, isSameMonth } from '../../../utilities/customServ
 import { deviceBreakpoint, logoFull, logoMini, searchFilter } from '../../../utilities/config';
 
 function Header(props) {
-    const { locations, benchmarkOffsetY, changeRoute, searchButtonText } = props;
-    const { searchMenu, onChangeSearchMenu, searchSubmenu, onChangeSearchSubmenu } = props;
+    const { locations, benchmarkOffsetY, changeRoute } = props;
+    const { searchButtonText, searchMenu, onChangeSearchMenu, searchSubmenu, onChangeSearchSubmenu } = props;
 
     const router = useRouter();
     const target = useMousedownTarget();
@@ -273,7 +273,7 @@ function Header(props) {
                 {!search && <button className={styles.searchButton} onClick={() => onClickOpenSearch()}>
                     
                     {/* search filters */}
-                    {typeof searchButtonText === 'object' && <h5 className={styles.searchText} style={{ width: 'fit-content', marginRight: '20px' }}>
+                    {searchButtonText?.location !== '' && <h5 className={styles.searchText} style={{ width: 'fit-content', marginRight: '20px' }}>
                         <span>{searchButtonText?.location?.split(',')[0]}</span>
                         <span>{searchButtonText?.date !== '' ? searchButtonText?.date : <span style={{ color: 'var(--grey006)', fontWeight: '300' }}>Add dates</span>}</span>
                         {parseInt(router.query.menu) === 0 && <span>
@@ -282,7 +282,7 @@ function Header(props) {
                     </h5>}
 
                     {/* default text */}
-                    {typeof searchButtonText === 'string' && <h5 className={styles.searchText}>{searchButtonText}</h5>}
+                    {searchButtonText?.location === '' && <h5 className={styles.searchText}>Start your search</h5>}
 
                     {/* search icon */}
                     <span className={styles.searchIcon}><SearchRoundedIcon fontSize='small' /></span>

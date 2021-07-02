@@ -51,9 +51,6 @@ function Header({ mode }) {
                 buttonText.location = location;
                 setSearchLocation(location);
             }
-            else {
-                setSearchLocation('');
-            }
             
             // format checkin/checkout dates
             if (router.query.checkin && router.query.checkout) {
@@ -111,8 +108,8 @@ function Header({ mode }) {
         event.preventDefault();
 
         if (params) {
-            let fullPath = path + '?menu=' + (menu || searchMenu) + '&';
-
+            let fullPath = path + '?menu=' + (menu === undefined ? searchMenu : menu) + '&';
+            
             Object.entries(params).forEach(item => {
                 fullPath += item[0] + '=';
 

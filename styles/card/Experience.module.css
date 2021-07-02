@@ -53,3 +53,9 @@
         height: 380px;
     }
 }
+
+@media (max-width: 460px) {
+    .image {
+        height: 280px;
+    }
+}

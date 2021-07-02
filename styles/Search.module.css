@@ -87,4 +87,8 @@
     .experiences > div {
         grid-template-columns: repeat(2, 1fr);
     }
+
+    .stays, .containerExperience {
+        padding-top: 100px;
+    }
 }

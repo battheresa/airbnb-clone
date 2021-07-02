@@ -4,6 +4,7 @@ import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import styles from '../../styles/modal/Gallery.module.css';
 import { shuffle } from '../../utilities/customService';
 import { useWindowDimensions } from '../../utilities/customHooks'; 
+import { deviceBreakpoint } from '../../utilities/config';
 
 function Gallery({ content, open, onClose }) {
     const { width, height } = useWindowDimensions();
@@ -30,10 +31,16 @@ function Gallery({ content, open, onClose }) {
     };
 
     // group images 
-    const groupImages = (portrait, landscape) => {
+    const groupImages = (portrait, landscape) => {        
         let group = [];
-        group.push([landscape[0]]);
-        landscape.shift();
+
+        if (landscape.length > 0) {
+            group.push([landscape[0]]);
+            landscape.shift();
+        } else {
+            group.push([portrait[0]]);
+            portrait.shift();
+        }
 
         const portraitPairs = Math.floor((portrait.length - 1) / 2);
 
@@ -43,7 +50,7 @@ function Gallery({ content, open, onClose }) {
             group.push(pair);
         }
 
-        if (portrait.length > 0) {
+        if (portrait.length > 0 && landscape.length > 0) {
             let subgroup = [];
             subgroup.push(portrait[0]);
             portrait.splice(0, 1);
@@ -53,6 +60,10 @@ function Gallery({ content, open, onClose }) {
             landscape.splice(0, 2);
 
             group.push(subgroup);
+        }
+
+        for (let i = 0; i < portrait.length; i++) {
+            group.push(portrait[i]);
         }
 
         const landscapePair = Math.floor((landscape.length - 1) / 2);
@@ -137,11 +148,17 @@ function Gallery({ content, open, onClose }) {
 
     return (
         <section className={styles.container} style={{ transform: `translateY(${open ? 0 : height + 50}px)` }}>
-            <button onClick={() => onClose()}><NavigateBeforeIcon fontSize='large' /></button>
+            <button onClick={() => onClose()}><NavigateBeforeIcon fontSize={width > deviceBreakpoint.small ? 'large' : 'default'} /></button>
 
-            <div className={styles.layout}>
+            {width > deviceBreakpoint.small && <div className={styles.layout}>
                 {gallery}
-            </div>
+            </div>}
+
+            {width <= deviceBreakpoint.small && <div className={styles.layout}>
+                {content.map((item, i) => (
+                    <img key={i} src={item} alt={item} className={styles.originalImage} />
+                ))}
+            </div>}
         </section>
     );
 }
