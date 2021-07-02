@@ -292,13 +292,15 @@
     justify-content: flex-end;
     align-items: center;
 
-    position: absolute;
-    left: 0;
-    bottom: 0;
+    position: relative;
+    /* left: 0; */
+    /* bottom: 50px; */
     z-index: 8;
 
-    padding: 20px;
-    width: 100vw;
+    padding: 20px 0;
+    width: 100%;
+
+    /* background-color: antiquewhite; */
 }
 
 .searchField > div:last-child > button {

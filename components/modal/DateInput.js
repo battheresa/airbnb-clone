@@ -71,14 +71,14 @@ function DateInput({ open, inline, mode, submenu, date, setDate }) {
 
     return (
         <div className={styles.container} style={{ display: open ? 'flex' : 'none' }} mode={inline ? 'inline' : 'modal'}>
-            <div className={styles.arrows} mode={inline ? 'inline' : 'modal'} position='left' onClick={() => moveCalendar(-1)}><ChevronLeftRoundedIcon /></div>
+            <div className={styles.arrows} position={inline ? 'inlineLeft' : 'modalLeft'} onClick={() => moveCalendar(-1)}><ChevronLeftRoundedIcon /></div>
 
             <div className={styles.calendars}>
                 <div><Calendar rows={rows} from={from} to={to} date={month1} setDate={setSelectedDate} /></div>
                 <div style={{ display: secondCalendar ? 'block' : 'none' }}><Calendar rows={rows} from={from} to={to} date={month2} setDate={setSelectedDate} /></div>
             </div>
 
-            <div className={styles.arrows} mode={inline ? 'inline' : 'modal'} position='right' onClick={() => moveCalendar(1)}><ChevronRightRoundedIcon /></div>
+            <div className={styles.arrows} position={inline ? 'inlineRight' : 'modalRight'} onClick={() => moveCalendar(1)}><ChevronRightRoundedIcon /></div>
         </div>
     );
 }

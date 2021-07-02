@@ -22,13 +22,10 @@
     justify-content: flex-start;
     align-items: center;
 
-    position: absolute;
-    top: 72px;
-    left: 0px;
+    position: relative;
 
     width: 100%;
-    padding: 42px 45px 38px;
-    margin-top: 20px;
+    margin: 30px 0px 0px;
 }
 
 .arrows {
@@ -53,14 +50,24 @@
     transform: scale(0.95);
 }
 
-.arrows[position=left] {
+.arrows[position=modalLeft] {
     top: 38px;
     left: 40px;
 }
 
-.arrows[position=right] {
+.arrows[position=modalRight] {
     top: 38px;
     right: 40px;
+}
+
+.arrows[position=inlineLeft] {
+    top: -5px;
+    left: 0;
+}
+
+.arrows[position=inlineRight] {
+    top: -5px;
+    right: 0;
 }
 
 .calendars {
