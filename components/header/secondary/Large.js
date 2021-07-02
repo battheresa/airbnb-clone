@@ -324,7 +324,7 @@ function Header(props) {
                                 <p><small>{inputDateStay.toText !== '' && inputDateStay.toText}</small></p>
                             </div>
                         </div>
-                        <DateInput open={searchSubmenu === 1 || searchSubmenu === 2} mode={true} submenu={searchSubmenu} date={inputDateStay} setDate={onEnterSearchDateStay} />
+                        <DateInput open={searchSubmenu === 1 || searchSubmenu === 2} inline={false} mode={true} submenu={searchSubmenu} date={inputDateStay} setDate={onEnterSearchDateStay} />
 
                         <div className={styles.searchFieldMenu} style={getSubmenuLayout(0, 3)} onClick={() => onChangeSubmenu(3)} onMouseEnter={() => onMouseEnterSubmenu(3)} onMouseLeave={() => onMouseLeaveSubmenu(3)} ref={submenuList[3]}>
                             <h6>{searchFilter[0].submenu[3]}</h6>
@@ -334,7 +334,7 @@ function Header(props) {
                             </div>
                             <span className={styles.searchIcon} onClick={(e) => getSearchResult(e, '/search', { location: inputLocation, checkin: inputDateStay.from, checkout: inputDateStay.to, guest: inputGuest })}><SearchRoundedIcon /></span>
                         </div>
-                        <GuestInput open={searchSubmenu === 3} guest={inputGuest} setGuest={onEnterSearchGuest}/>
+                        <GuestInput open={searchSubmenu === 3} inline={false} guest={inputGuest} setGuest={onEnterSearchGuest}/>
 
                         {/* second submenu group */}
                         <div className={styles.searchFieldMenu} style={getSubmenuLayout(1, 1)} onClick={() => onChangeSubmenu(4)} onMouseEnter={() => onMouseEnterSubmenu(4)} onMouseLeave={() => onMouseLeaveSubmenu(4)} ref={submenuList[4]}>
@@ -345,7 +345,7 @@ function Header(props) {
                             </div>
                             <span className={styles.searchIcon} onClick={(e) => getSearchResult(e, '/search', { location: inputLocation, checkin: inputDateExperience.from, checkout: inputDateExperience.to })}><SearchRoundedIcon /></span>
                         </div>
-                        <DateInput open={searchSubmenu === 4} mode={false} submenu={searchSubmenu} date={inputDateExperience} setDate={onEnterSearchDateExperience} />
+                        <DateInput open={searchSubmenu === 4} inline={false} mode={false} submenu={searchSubmenu} date={inputDateExperience} setDate={onEnterSearchDateExperience} />
                     </animated.div>
                 </animated.div>
             </div>

@@ -5,7 +5,7 @@ import RemoveIcon from '@material-ui/icons/Remove';
 
 import styles from '../../styles/modal/GuestInput.module.css';
 
-function GuestInput({ open, guest, setGuest }) {
+function GuestInput({ open, inline, guest, setGuest }) {
     const [ adults, setAdults ] = useState(guest.adults);
     const [ children, setChildren ] = useState(guest.children);
     const [ infants, setInfants ] = useState(guest.infants);
@@ -73,7 +73,7 @@ function GuestInput({ open, guest, setGuest }) {
     };
 
     return (
-        <div className={styles.container} style={{ display: open ? 'flex' : 'none' }}>
+        <div className={styles.container} style={{ display: open ? 'flex' : 'none' }} mode={inline ? 'inline' : 'modal'}>
             <div className={styles.group}>
                 <div className={styles.text}>
                     <h4>Adults</h4>

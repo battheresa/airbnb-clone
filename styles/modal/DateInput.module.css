@@ -1,4 +1,4 @@
-.container {
+.container[mode=modal] {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -14,6 +14,21 @@
     background-color: var(--white);
     border-radius: 35px;
     box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.2);
+}
+
+.container[mode=inline] {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    position: absolute;
+    top: 72px;
+    left: 0px;
+
+    width: 100%;
+    padding: 42px 45px 38px;
+    margin-top: 20px;
 }
 
 .arrows {

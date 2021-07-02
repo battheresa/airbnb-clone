@@ -8,7 +8,7 @@ import SecondarySmall from './secondary/Small';
 
 import { getSearchLocations } from '../../utilities/services';
 import { useWindowDimensions } from '../../utilities/customHooks'; 
-import { formatDate, isBefore, isSameDate, isSameMonth } from '../../utilities/customService';
+import { formatDate } from '../../utilities/customService';
 
 function Header({ mode }) {
     const router = useRouter();
@@ -20,7 +20,6 @@ function Header({ mode }) {
     const [ searchSubmenu, setSearchSubmenu ] = useState(-1);
 
     const [ searchButtonText, setSearchButtonText ] = useState('Start your search');
-
     const [ searchLocation, setSearchLocation ] = useState('');
     const [ searchDateStay, setSearchDateStay ] = useState({ from: undefined, fromText: '', to: undefined, toText: '' });
     const [ searchDateExperience, setSearchDateExperience ] = useState({ from: undefined, to: undefined, text: '' });
@@ -31,37 +30,39 @@ function Header({ mode }) {
         getSearchLocations().then(content => setLocations(content));
     }, []);
 
-    // parse search menu from url
+    // parse search query from url
     useEffect(() => {
         if (router.query.menu) {
             setSearchMenu(parseInt(router.query.menu));
         }
-    }, [router.query.menu]);
 
-    // parse search query from url
-    useEffect(() => {
-        if (mode === 'secondary' && router.query.location) {
-            // format dates
-            let from = router.query.checkin.split('-');
-            let dateFrom = formatDate(new Date(parseInt(from[0]), parseInt(from[1]), parseInt(from[2])));
-            
-            let to = router.query.checkout.split('-');
-            let dateTo = formatDate(new Date(parseInt(to[0]), parseInt(to[1]), parseInt(to[2])));
-            
-            // format location text
-            let location = router.query.location.replaceAll('-', ', ');
-            for (let i = location.length - 1; i > 0; i--) {
-                if (location[i] === location[i].toUpperCase()) {
-                    location = location.substring(0, i) + ' ' + location.substring(i);
-                }
-            }
-            setSearchLocation(location);
-
+        if (mode === 'secondary') {
             // fotmat button text
-            let buttonText = { location: location, date: '', guest: '' };
+            let buttonText = { location: '', date: '', guest: '' };
+
+            // format location text
+            if (router.query.location) {
+                let location = router.query.location.replaceAll('-', ', ');
+                for (let i = location.length - 1; i > 0; i--) {
+                    if (location[i] === location[i].toUpperCase()) {
+                        location = location.substring(0, i) + ' ' + location.substring(i);
+                    }
+                }
+                buttonText.location = location;
+                setSearchLocation(location);
+            }
+            else {
+                setSearchLocation('');
+            }
             
-            // format checkin and checkout dates text
+            // format checkin/checkout dates
             if (router.query.checkin && router.query.checkout) {
+                let from = router.query.checkin.split('-');
+                let dateFrom = formatDate(new Date(parseInt(from[0]), parseInt(from[1]), parseInt(from[2])));
+                
+                let to = router.query.checkout.split('-');
+                let dateTo = formatDate(new Date(parseInt(to[0]), parseInt(to[1]), parseInt(to[2])));
+                
                 if (parseInt(router.query.menu) === 0) {
                     buttonText.date = dateFrom.monthText.slice(0, 3) + ' ' + dateFrom.date + ' - ' + (dateFrom.month === dateTo.month ? dateTo.date : dateTo.monthText.slice(0, 3) + ' ' + dateTo.date);
                     setSearchDateStay({ from: dateFrom, fromText: dateFrom.monthText.slice(0, 3) + ' ' + dateFrom.date, to: dateTo, toText: dateTo.monthText.slice(0, 3) + ' ' + dateTo.date });
@@ -69,7 +70,7 @@ function Header({ mode }) {
                 }
 
                 if (parseInt(router.query.menu) === 1) {
-                    let dateText = dateFrom.monthText + ' ' + dateFrom.date;
+                    let dateText = dateFrom.monthText.slice(0, 3) + ' ' + dateFrom.date;
                     dateText += dateFrom.month === dateTo.month ? ' - ' : ' - ' + dateTo.monthText.slice(0, 3) + ' ';
                     dateText += dateTo.date;
 
@@ -79,8 +80,8 @@ function Header({ mode }) {
                 }
             }
             else {
-                setSearchDateStay({ from: dateFrom, fromText: '', to: dateTo, toText: '' });
-                setSearchDateExperience({ from: dateFrom, to: dateTo, text: '' });
+                setSearchDateStay({ from: undefined, fromText: '', to: undefined, toText: '' });
+                setSearchDateExperience({ from: undefined, to: undefined, text: '' });
             }
 
             // format guest text
@@ -103,14 +104,14 @@ function Header({ mode }) {
 
             setSearchButtonText(buttonText);
         }
-    }, [router.query.location, router.query.checkin, router.query.checkout, router.query.guest]);
+    }, [router.query.menu, router.query.location, router.query.checkin, router.query.checkout, router.query.guest]);
 
     // redirect page
-    const changeRoute = (event, path, params) => {
+    const changeRoute = (event, path, params, menu) => {
         event.preventDefault();
 
         if (params) {
-            let fullPath = path + '?menu=' + searchMenu + '&';
+            let fullPath = path + '?menu=' + (menu || searchMenu) + '&';
 
             Object.entries(params).forEach(item => {
                 fullPath += item[0] + '=';
@@ -165,6 +166,7 @@ function Header({ mode }) {
         {(mode === 'primary' && width <= 740) && 
             <PrimarySmall 
                 locations={locations} 
+                benchmarkOffsetY={benchmarkOffsetY}
                 changeRoute={changeRoute} 
                 searchMenu={searchMenu}
                 onChangeSearchMenu={onChangeSearchMenu}
@@ -175,6 +177,7 @@ function Header({ mode }) {
         {(mode === 'secondary' && width > 740) && 
             <SecondaryLarge 
                 locations={locations} 
+                benchmarkOffsetY={benchmarkOffsetY}
                 changeRoute={changeRoute} 
                 searchMenu={searchMenu}
                 onChangeSearchMenu={onChangeSearchMenu}
@@ -190,6 +193,7 @@ function Header({ mode }) {
         {(mode === 'secondary' && width <= 740) && 
             <SecondarySmall 
                 locations={locations} 
+                benchmarkOffsetY={benchmarkOffsetY}
                 changeRoute={changeRoute} 
                 searchMenu={searchMenu}
                 onChangeSearchMenu={onChangeSearchMenu}

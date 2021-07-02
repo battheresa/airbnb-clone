@@ -11,7 +11,7 @@ import { deviceBreakpoint } from '../../utilities/config';
 import { useWindowDimensions } from '../../utilities/customHooks';
 import { getMonth, formatDate, isBefore } from '../../utilities/customService';
 
-function DateInput({ open, mode, submenu, date, setDate }) {
+function DateInput({ open, inline, mode, submenu, date, setDate }) {
     const { width, height } = useWindowDimensions();
     const [ secondCalendar, setSecondCalendar ] = useState(true);
     
@@ -70,15 +70,15 @@ function DateInput({ open, mode, submenu, date, setDate }) {
     };
 
     return (
-        <div className={styles.container} style={{ display: open ? 'flex' : 'none' }}>
-            <div className={styles.arrows} position='left' onClick={() => moveCalendar(-1)}><ChevronLeftRoundedIcon /></div>
+        <div className={styles.container} style={{ display: open ? 'flex' : 'none' }} mode={inline ? 'inline' : 'modal'}>
+            <div className={styles.arrows} mode={inline ? 'inline' : 'modal'} position='left' onClick={() => moveCalendar(-1)}><ChevronLeftRoundedIcon /></div>
 
             <div className={styles.calendars}>
                 <div><Calendar rows={rows} from={from} to={to} date={month1} setDate={setSelectedDate} /></div>
                 <div style={{ display: secondCalendar ? 'block' : 'none' }}><Calendar rows={rows} from={from} to={to} date={month2} setDate={setSelectedDate} /></div>
             </div>
 
-            <div className={styles.arrows} position='right' onClick={() => moveCalendar(1)}><ChevronRightRoundedIcon /></div>
+            <div className={styles.arrows} mode={inline ? 'inline' : 'modal'} position='right' onClick={() => moveCalendar(1)}><ChevronRightRoundedIcon /></div>
         </div>
     );
 }

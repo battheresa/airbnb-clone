@@ -52,8 +52,6 @@ function Search() {
         }
         else if (searchLocation && searchMenu === 0) {
             let data = await getStaysByLocations(searchLocation);
-
-            console.log(searchLocation)
             let totalGuest = (searchGuest.adults || 0) + (searchGuest.children || 0);
 
             nStays = data.filter(item => item.rooms.guest >= totalGuest);
