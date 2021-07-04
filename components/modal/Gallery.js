@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef } from 'react';
+import { Slide, Dialog } from '@material-ui/core';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
 import styles from '../../styles/modal/Gallery.module.css';
@@ -31,7 +32,7 @@ function Gallery({ content, open, onClose }) {
     };
 
     // group images 
-    const groupImages = (portrait, landscape) => {        
+    const groupImages = (portrait, landscape) => {
         let group = [];
 
         if (landscape.length > 0) {
@@ -81,6 +82,7 @@ function Gallery({ content, open, onClose }) {
         return group;
     };
 
+    // format single
     const formatSingle = (key, images) => {
         return [
             <div key={key} className={styles.single}>
@@ -89,6 +91,7 @@ function Gallery({ content, open, onClose }) {
         ];
     };
 
+    // format pair
     const formatPair = (key, images) => {
         const image = new Image();
         image.src = images[0];
@@ -104,6 +107,7 @@ function Gallery({ content, open, onClose }) {
         ];
     };
 
+    // format group
     const formatGroup = (key, images) => {
         return [
             <div key={key} className={styles.group}>
@@ -114,6 +118,7 @@ function Gallery({ content, open, onClose }) {
         ];
     };
 
+    // form gallery
     const formGallery = (images) => {
         let layout = [];
 
@@ -145,6 +150,11 @@ function Gallery({ content, open, onClose }) {
             setGallery(formGallery(group));
         }
     }, [content]);
+
+    // update body overflow
+    useEffect(() => {
+        document.body.style.overflow = open ? 'hidden' : 'visible';
+    }, [open]);
 
     return (
         <section className={styles.container} style={{ transform: `translateY(${open ? 0 : height + 50}px)` }}>

@@ -1,9 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, forwardRef } from 'react';
 
 import styles from '../../../styles/header/Small.module.css';
 
 import MenuList from '../../modal/MenuList';
 
+import { Slide, Dialog } from '@material-ui/core';
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
@@ -60,6 +61,8 @@ function Header(props) {
     const onClickOpenSearch = (open, submenu) => {
         setSearch(open);
         onChangeSearchSubmenu(submenu);
+        setInputLocation('');
+        document.body.style.overflow = open ? 'hidden' : 'visible';
     };
 
     // set search menu + change route
@@ -73,6 +76,11 @@ function Header(props) {
         setInputLocation(input);
         onChangeSearchSubmenu(searchSubmenu + 1);
     };
+
+    // modal transition
+    const Transition = forwardRef(function Transition(props, ref) {
+        return <Slide direction='up' ref={ref} {...props} />;
+    });
 
     return (
         <div className={styles.container} version='home'>

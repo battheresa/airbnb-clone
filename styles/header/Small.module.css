@@ -191,7 +191,31 @@
     border-bottom: 1px solid var(--grey004);
 }
 
-.searchMenu[version=other] > h4 {
+.searchMenu[version=other] > div:first-child {
+    position: relative;
+    padding: 5px 0;
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.searchMenu[version=other] > div > button {
+    position: absolute;
+    left: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    margin-left: -8px;
+
+    border-radius: 50%;
+}
+
+.searchMenu[version=other] > div > h4 {
     font-size: 16px;
 }
 
@@ -208,8 +232,8 @@
     overflow: hidden;
     margin: 15px 0 8px 0;
     border-radius: 12px;
-    border-bottom: 1px solid var(--grey004);
-    box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--grey004);
+    box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.1);
 }
 
 .searchSummary:hover {
@@ -282,7 +306,7 @@
     border-radius: 50%;
 }
 
-.searchField > div:not(:last-child) {
+.searchField > div:not(:first-child):not(:last-child) {
     margin-top: 20px;
 }
 
@@ -293,14 +317,10 @@
     align-items: center;
 
     position: relative;
-    /* left: 0; */
-    /* bottom: 50px; */
     z-index: 8;
 
     padding: 20px 0;
     width: 100%;
-
-    /* background-color: antiquewhite; */
 }
 
 .searchField > div:last-child > button {

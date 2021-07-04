@@ -57,6 +57,11 @@ function Header(props) {
         }
     }, [locations, inputLocation]);
 
+    // update body overflow
+    useEffect(() => {
+        document.body.style.overflow = searchSubmenu >= 0 ? 'hidden' : 'visible';
+    }, [searchSubmenu]);
+
     // update on click screen cover
     const onClickScreenCover = () => {
         if (target === 'screenCover') 
@@ -164,7 +169,7 @@ function Header(props) {
                     </div>}
                     {searchSubmenu > 0 && <button onClick={() => onChangeSearchSubmenu(-1)}><CloseRoundedIcon /></button>}
 
-                    {searchSubmenu === 0 && <div>
+                    {searchSubmenu === 0 && <div style={{ margin: '0' }}>
                         <MenuList open={search} mode='inline' content={locationList} type='locations' setSelected={onEnterInputLocation} />
                     </div>}
 
