@@ -1,5 +1,4 @@
-import { useState, useEffect, forwardRef } from 'react';
-import { Slide, Dialog } from '@material-ui/core';
+import { useState, useEffect } from 'react';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 
 import styles from '../../styles/modal/Gallery.module.css';
