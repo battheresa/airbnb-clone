@@ -3,7 +3,16 @@
 Firebase hositng: *https://airbnb-clone-9ccdf.web.app*
 
 <br>
-<hr>
+
+## **Technologies/Package Used**
+
+* ReactJS
+* NextJS
+* Firebase Firestore
+* Firebase Hosting
+* React Spring
+* Material UI
+
 <br>
 
 ## **Features Implemented**
@@ -23,20 +32,3 @@ Firebase hositng: *https://airbnb-clone-9ccdf.web.app*
         * Infinite scrolling
 * Image Gallery
 * Image Carousel
-
-<br>
-
-`Not all features on the airbnb website was implemented in this clone.`
-
-<br>
-<hr>
-<br>
-
-## **Technologies/Package Used**
-
-* ReactJS
-* NextJS
-* Firebase Firestore
-* Firebase Hosting
-* React Spring
-* Material UI
